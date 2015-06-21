@@ -96,7 +96,9 @@ footer {
 /**************************
 PAGE HOME
 **************************/
-
+#wrapper li {
+  list-style: none;
+}
 
 /**************************
 PAGE ADD
@@ -115,25 +117,13 @@ PAGE EDIT
   font-size: 0.9em;
 }
 
-.contact-info a {
+.contact-in a {
   display: block;
   min-height: 20px;
   background-repeat: no-repeat;
   background-size: 20px 20px;
   padding: 0 0 0 30px;
   margin: 0 0 10px;
-}
-
-.contact-info li.phone a {
-  background-image: url('../img/phone.png');
-}
-
-.contact-info li.mail a {
-  background-image: url('../img/mail.png');
-}
-
-.contact-info li.twitter a {
-  background-image: url('../img/twitter.png');
 }
 
 
@@ -150,31 +140,31 @@ body {
 
 /* Green Header */
 header {
-  background: #6ab47b;
-  border-color: #599a68;
+  background: #dd6a0a;
+  border-color: #e58331;
 }
 
 /* Nav Background on Mobile */
 nav {
-  background: #599a68;
+  background: #e58331;
 }
 
 /* Logo Text */
 h1, h2 {
-  color: #fff;
+  color: #ddd;
 }
 
 /* Links */
 a {
-  color: #6ab47b;
+  color: silver;
 }
 
 /* Nav Link */
 nav a, nav a:visited {
-  color: #fff;
+  color: #ddd;
 }
 
 nav a.selected, nav a:hover {
-  color: #32673f
+  color: #666;
 }
 
