@@ -104,27 +104,33 @@ PAGE HOME
 PAGE ADD
 **************************/
 
+#add {
+
+  text-align: center;
+}
+
+#title {
+  padding: 10px;
+  width: 300px;
+}
+
+#textbox {
+  padding: 10px;
+  height:180px;
+  width: 400px;
+}
 
 
 /**************************
 PAGE EDIT
 **************************/
 
-.contact-info {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  font-size: 0.9em;
-}
 
-.contact-in a {
-  display: block;
-  min-height: 20px;
-  background-repeat: no-repeat;
-  background-size: 20px 20px;
-  padding: 0 0 0 30px;
-  margin: 0 0 10px;
-}
+
+
+/**************************
+PAGE DETAIL
+**************************/
 
 
 
@@ -138,13 +144,13 @@ body {
   color: #999;
 }
 
-/* Green Header */
+/* Orange Header */
 header {
   background: #dd6a0a;
   border-color: #e58331;
 }
 
-/* Nav Background on Mobile */
+/* Nav Background */
 nav {
   background: #e58331;
 }
@@ -159,7 +165,7 @@ a {
   color: silver;
 }
 
-/* Nav Link */
+/* Nav Links */
 nav a, nav a:visited {
   color: #ddd;
 }
