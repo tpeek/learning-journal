@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-import sqlalchemy as sa
-from sqlalchemy.ext.declarative import declarative_base
 from __future__ import unicode_literals
 import os
+import sqlalchemy as sa
+from sqlalchemy.ext.declarative import declarative_base
 from pyramid.config import Configurator
 from pyramid.view import view_config
 from waitress import serve
@@ -10,6 +10,12 @@ import datetime
 
 
 Base = declarative_base()
+
+DATABASE_URL = os.environ.get(
+    'DATABASE_URL',
+    'postgresql://tyler:tyler@localhost:5432/learning-journal'
+)
+
 
 class Entry(Base):
     __tablename__ = 'entries'
@@ -19,7 +25,7 @@ class Entry(Base):
     created = sa.Column(
         sa.DateTime, nullable=False, default=datetime.datetime.utcnow
     )
-    
+
 
 @view_config(route_name='home', renderer='string')
 def home(request):
@@ -47,3 +53,7 @@ if __name__ == '__main__':
     port = os.environ.get('PORT', 5000)
     serve(app, host='0.0.0.0', port=port)
 
+
+def init_db():
+    engine = sa.create_engine(DATABASE_URL)
+    Base.metadata.create_all(engine)
