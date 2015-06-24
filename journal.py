@@ -27,9 +27,16 @@ class Entry(Base):
     )
 
 
-@view_config(route_name='home', renderer='string')
+@view_config(route_name='home', renderer='templates/test.jinja2')
 def home(request):
-    return "Hello World"
+    # import pdb; pdb.set_trace()
+    return {'one': 'two'}
+
+
+@view_config(route_name='other', renderer='string')
+def other(request):
+    import pdb; pdb.set_trace()
+    return request.matchdict
 
 
 def main():
@@ -42,7 +49,9 @@ def main():
     config = Configurator(
         settings=settings
     )
+    config.include('pyramid_jinja2')
     config.add_route('home', '/')
+    config.add_route('other', '/other/{special_val}')
     config.scan()
     app = config.make_wsgi_app()
     return app
@@ -50,7 +59,7 @@ def main():
 
 if __name__ == '__main__':
     app = main()
-    port = os.environ.get('PORT', 5000)
+    port = os.environ.get('PORT', 5002)
     serve(app, host='0.0.0.0', port=port)
 
 
