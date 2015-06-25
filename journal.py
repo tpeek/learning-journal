@@ -7,6 +7,7 @@ from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
+from pyramid.security import remember, forget
 from waitress import serve
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
@@ -20,6 +21,8 @@ DBSession = scoped_session(sessionmaker(
             extension=ZopeTransactionExtension()))
 
 Base = declarative_base()
+
+HERE = os.path.dirname(os.path.abspath(__file__))
 
 DATABASE_URL = os.environ.get(
     'DATABASE_URL',
@@ -58,6 +61,19 @@ class Entry(Base):
 #     return "Hello World"
 
 
+def do_login(request):
+    username = request.params.get('username', None)
+    password = request.params.get('password', None)
+    if not (username and password):
+        raise ValueError('both username and password are required')
+    settings = request.registry.settings
+    manager = BCRYPTPasswordManager()
+    if username == settings.get('auth.username', ''):
+        hashed = settings.get('auth.password', '')
+        return manager.check(hashed, password)
+    return False
+
+
 @view_config(route_name='other', renderer='string')
 def other(request):
     #    import pdb; pdb.set_trace()
@@ -84,6 +100,32 @@ def db_exception(context, request):
     response = Response(context.message)
     response.status_int = 500
     return response
+
+
+@view_config(route_name='login', renderer="templates/login.jinja2")
+def login(request):
+    """authenticate a user by username/password"""
+    username = request.params.get('username', '')
+    error = ''
+    if request.method == 'POST':
+        error = "Login Failed"
+        authenticated = False
+        try:
+            authenticated = do_login(request)
+        except ValueError as e:
+            error = str(e)
+
+        if authenticated:
+            headers = remember(request, username)
+            return HTTPFound(request.route_url('home'), headers=headers)
+
+    return {'error': error, 'username': username}
+
+
+@view_config(route_name='logout')
+def logout(request):
+    headers = forget(request)
+    return HTTPFound(request.route_url('home'), headers=headers)
 
 
 def main():
@@ -114,9 +156,12 @@ def main():
     )
     config.include('pyramid_tm')
     config.include('pyramid_jinja2')
+    config.add_static_view('static', os.path.join(HERE, 'static'))
     config.add_route('home', '/')
     config.add_route('add', '/add')
     config.add_route('other', '/other/{special_val}')
+    config.add_route('login', '/login')
+    config.add_route('logout', '/logout')
     config.scan()
     app = config.make_wsgi_app()
     return app
@@ -131,16 +176,3 @@ if __name__ == '__main__':
 def init_db():
     engine = sa.create_engine(DATABASE_URL)
     Base.metadata.create_all(engine)
-
-
-def do_login(request):
-    username = request.params.get('username', None)
-    password = request.params.get('password', None)
-    if not (username and password):
-        raise ValueError('both username and password are required')
-    settings = request.registry.settings
-    manager = BCRYPTPasswordManager()
-    if username == settings.get('auth.username', ''):
-        hashed = settings.get('auth.password', '')
-        return manager.check(hashed, password)
-    return False
