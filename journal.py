@@ -28,7 +28,8 @@ class Entry(Base):
     title = sa.Column(sa.Unicode(127), nullable=False)
     text = sa.Column(sa.UnicodeText, nullable=False)
     created = sa.Column(
-        sa.DateTime, nullable=False, default=datetime.datetime.utcnow
+        sa.DateTime, nullable=False,
+        default=datetime.datetime.utcnow
     )
 
     @classmethod
@@ -38,6 +39,12 @@ class Entry(Base):
         instance = cls(title=title, text=text)
         session.add(instance)
         return instance
+
+    @classmethod
+    def all(cls, session=None):
+        if session is None:
+            session = DBSession
+        return session.query(cls).order_by(cls.created.desc()).all()
 
 
 @view_config(route_name='home', renderer='string')
@@ -84,3 +91,4 @@ if __name__ == '__main__':
 def init_db():
     engine = sa.create_engine(DATABASE_URL)
     Base.metadata.create_all(engine)
+
