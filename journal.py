@@ -7,7 +7,12 @@ from pyramid.config import Configurator
 from pyramid.view import view_config
 from waitress import serve
 import datetime
+from sqlalchemy.orm import scoped_session, sessionmaker
+from zope.sqlalchemy import ZopeTransactionExtension
 
+
+DBSession = scoped_session(sessionmaker(
+            extension=ZopeTransactionExtension()))
 
 Base = declarative_base()
 
@@ -26,16 +31,24 @@ class Entry(Base):
         sa.DateTime, nullable=False, default=datetime.datetime.utcnow
     )
 
+    @classmethod
+    def write(cls, title=None, text=None, session=None):
+        if session is None:
+            session = session.DBSession()
+        instance = cls(title=title, text=text)
+        session.add(instance)
+        return instance
 
-@view_config(route_name='home', renderer='templates/test.jinja2')
+
+@view_config(route_name='home', renderer='string')
 def home(request):
     # import pdb; pdb.set_trace()
-    return {'one': 'two'}
+    return "Hello World"
 
 
 @view_config(route_name='other', renderer='string')
 def other(request):
-    import pdb; pdb.set_trace()
+    #    import pdb; pdb.set_trace()
     return request.matchdict
 
 
@@ -45,10 +58,15 @@ def main():
     debug = os.environ.get('DEBUG', True)
     settings['reload_all'] = debug
     settings['debug_all'] = debug
+    if not os.environ.get('TESTING', False):
+        # only bind the session if we are not testing
+        engine = sa.create_engine(DATABASE_URL)
+        DBSession.configure(bind=engine)
     # configuration setup
     config = Configurator(
         settings=settings
     )
+    config.include('pyramid_tm')
     config.include('pyramid_jinja2')
     config.add_route('home', '/')
     config.add_route('other', '/other/{special_val}')
