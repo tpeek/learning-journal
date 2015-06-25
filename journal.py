@@ -47,16 +47,22 @@ class Entry(Base):
         return session.query(cls).order_by(cls.created.desc()).all()
 
 
-@view_config(route_name='home', renderer='string')
-def home(request):
-    # import pdb; pdb.set_trace()
-    return "Hello World"
+# @view_config(route_name='home', renderer='string')
+# def home(request):
+#     # import pdb; pdb.set_trace()
+#     return "Hello World"
 
 
 @view_config(route_name='other', renderer='string')
 def other(request):
     #    import pdb; pdb.set_trace()
     return request.matchdict
+
+
+@view_config(route_name='home', renderer='templates/list.jinja2')
+def list_view(request):
+    entries = Entry.all()
+    return {'entries': entries}
 
 
 def main():
@@ -91,4 +97,3 @@ if __name__ == '__main__':
 def init_db():
     engine = sa.create_engine(DATABASE_URL)
     Base.metadata.create_all(engine)
-
