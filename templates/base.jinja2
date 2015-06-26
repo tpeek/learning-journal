@@ -1,46 +1,44 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Tyler Peek | Home</title>
-    <link href="/static/style.css" rel="stylesheet">
-    <link href='http://fonts.googleapis.com/css?family=Homemade+Apple' rel='stylesheet' type='text/css'>
-  </head>
-  <body>
-    <header>
-      <a href="{{ request.route_url('home') }}" id="logo">
-        <h1>Tyler Peek</h1>
-        <h2>Python Developer</h2>
-      </a>
-      <nav>
-        <ul>
-          <li><a href="{{ request.route_url('home') }}" class="selected">Home</a></li>
-            {% if request.authenticated_userid %}
-              <li><a href="{{ request.route_url('add') }}">Add</a></li>
-              <li><a href="{{ request.route_url('logout') }}">Log Out</a></li>
-            {% else %}
-              <li><a href="{{ request.route_url('login') }}">Login</a></li>
-            {% endif %}
-        </ul>
-      </nav>
-    </header>
-    <div id="wrapper">
-
-
-<h3>Journal Entries</h3>
-  {% for entry in entries %}
-  <article class="entry-link" id="entry={{entry.id}}">
-    <a href="{{ request.route_url('detail') }}"><h4>{{ entry.created.strftime('%b. %d, %Y') }}  ----  {{ entry.title }}</h4></a>
-  </article>
-  {% else %}
-  <div class="entry">
-    <p><em>No entries here so far</em></p>
-  </div>
-  {% endfor %}
-      <footer>
-        </a>
-        <p>&copy; 2015 Tyler Peek.</p>
-      </footer>
+<head>
+  <meta charset="utf-8">
+  <title>Tyler Peek | Home</title>
+  <link href="/static/style.css" rel="stylesheet">
+  <link href='http://fonts.googleapis.com/css?family=Homemade+Apple' rel='stylesheet' type='text/css'>
+</head>
+<body>
+  <header>
+    <a href="{{ request.route_url('home') }}" id="logo">
+      <h1>Tyler Peek</h1>
+      <h2>Python Developer</h2>
+    </a>
+    <nav>
+      <ul>
+        <li><a href="{{ request.route_url('home') }}" class="selected">Home</a></li>
+        {% if request.authenticated_userid %}
+        <li><a href="{{ request.route_url('add') }}">Add</a></li>
+        <li><a href="{{ request.route_url('logout') }}">Log Out</a></li>
+        {% else %}
+        <li><a href="{{ request.route_url('login') }}">Login</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </header>
+  <div id="wrapper">
+    <h3>Journal Entries</h3>
+    {% for entry in entries %}
+    <article class="entry-link" id="entry={{entry.id}}">
+      <a href="{{ request.route_url('detail') }}"><h4>{{ entry.created.strftime('%b. %d, %Y') }}  ----  {{ entry.title }}</h4></a>
+    </article>
+    {% else %}
+    <div class="entry">
+      <p><em>No entries here so far</em></p>
     </div>
-  </body>
+    {% endfor %}
+    <footer>
+    </a>
+    <p>&copy; 2015 Tyler Peek.</p>
+  </footer>
+</div>
+</body>
 </html>

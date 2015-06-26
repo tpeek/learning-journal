@@ -1,31 +1,30 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Tyler Peek | Add</title>
-    <link href="/static/style.css" rel="stylesheet">
-    <link href='http://fonts.googleapis.com/css?family=Homemade+Apple' rel='stylesheet' type='text/css'>
-    {% if not request.authenticated_userid %}
-      <meta http-equiv="refresh" content="0; url={{ request.route_url('home') }}" />
-    {% endif %}
-  </head>
-  <body>
-    <header>
-      <a href="{{ request.route_url('home') }}" id="logo">
-        <h1>Tyler Peek</h1>
-        <h2>Python Developer</h2>
-      </a>
-      <nav>
-        <ul>
-          <li><a href="{{ request.route_url('home') }}">Home</a></li>
-          <li><a href="{{ request.route_url('logout') }}">Log Out</a></li>
-        </ul>
-      </nav>
-    </header>
-    <div id="wrapper">
-      <section>
-
-        <aside>
+<head>
+  <meta charset="utf-8">
+  <title>Tyler Peek | Add</title>
+  <link href="/static/style.css" rel="stylesheet">
+  <link href='http://fonts.googleapis.com/css?family=Homemade+Apple' rel='stylesheet' type='text/css'>
+  {% if not request.authenticated_userid %}
+  <meta http-equiv="refresh" content="0; url={{ request.route_url('home') }}" />
+  {% endif %}
+</head>
+<body>
+  <header>
+    <a href="{{ request.route_url('home') }}" id="logo">
+      <h1>Tyler Peek</h1>
+      <h2>Python Developer</h2>
+    </a>
+    <nav>
+      <ul>
+        <li><a href="{{ request.route_url('home') }}">Home</a></li>
+        <li><a href="{{ request.route_url('logout') }}">Log Out</a></li>
+      </ul>
+    </nav>
+  </header>
+  <div id="wrapper">
+  <section>
+      <aside>
         <form action="{{ request.route_url('add') }}" method="POST" class="add_entry">
           <div class="field">
             <p>Entry Title</p>
@@ -41,6 +40,6 @@
             <input type="submit" value="Share" name="Share"/>
           </div>
         </form>
-        </aside>
-      </section>
-    </div>
+      </aside>
+    </section>
+  </div>

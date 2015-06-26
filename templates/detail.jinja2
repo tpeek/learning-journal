@@ -1,36 +1,36 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Tyler Peek | Detail</title>
-    <link href="/static/style.css" rel="stylesheet">
-    <link href='http://fonts.googleapis.com/css?family=Homemade+Apple' rel='stylesheet' type='text/css'>
-  </head>
-  <body>
-    <header>
-      <a href="{{ request.route_url('home') }}" id="logo">
-        <h1>Tyler Peek</h1>
-        <h2>Python Developer</h2>
-      </a>
-      <nav>
-        <ul>
-          <li><a href="{{ request.route_url('home') }}">Home</a></li>
-          {% if request.authenticated_userid %}
-            <li><a href="{{ request.route_url('add') }}">Add</a></li>
-            <li><a href="{{ request.route_url('logout') }}">Log Out</a></li>
-          {%- endif %}
-          <!-- to be added later<li><a href="edit.html">Edit</a></li> -->
-        </ul>
-      </nav>
-    </header>
-    <div id="wrapper">
-      <section>
-<p>This will work soon :)</p>
-      </section>
-      <footer>
-        </a>
-        <p>&copy; 2015 Tyler Peek.</p>
-      </footer>
-    </div>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <title>Tyler Peek | Detail</title>
+  <link href="/static/style.css" rel="stylesheet">
+  <link href='http://fonts.googleapis.com/css?family=Homemade+Apple' rel='stylesheet' type='text/css'>
+</head>
+<body>
+  <header>
+    <a href="{{ request.route_url('home') }}" id="logo">
+      <h1>Tyler Peek</h1>
+      <h2>Python Developer</h2>
+    </a>
+    <nav>
+      <ul>
+        <li><a href="{{ request.route_url('home') }}">Home</a></li>
+        {% if request.authenticated_userid %}
+        <li><a href="{{ request.route_url('add') }}">Add</a></li>
+        <li><a href="{{ request.route_url('logout') }}">Log Out</a></li>
+        {%- endif %}
+        <!-- to be added later<li><a href="edit.html">Edit</a></li> -->
+      </ul>
+    </nav>
+  </header>
+  <div id="wrapper">
+    <section>
+      <p>This will work soon :)</p>
+    </section>
+    <footer>
+    </a>
+    <p>&copy; 2015 Tyler Peek.</p>
+  </footer>
+</div>
+</body>
 </html>
