@@ -3,8 +3,11 @@
   <head>
     <meta charset="utf-8">
     <title>Tyler Peek | Login</title>
-    <link href="/static/style.css" rel="stylesheet" href="style.css">
+    <link href="/static/style.css" rel="stylesheet">
     <link href='http://fonts.googleapis.com/css?family=Homemade+Apple' rel='stylesheet' type='text/css'>
+    {% if request.authenticated_userid %}
+      <meta http-equiv="refresh" content="0; url={{ request.route_url('home') }}" />
+    {% endif %}
   </head>
   <body>
     <header>
@@ -23,8 +26,9 @@
 
   <h4>Login</h4>
   {% if error -%}
-  <p class="error"><strong>Error</strong>: {{ error }}
+  <p class="error"><strong>Error</strong>: {{ error }}</p>
   {%- endif %}
+  <div class="wrapper">
   <form action="{{ request.route_url('login') }}" method="POST">
     <div class="field">
       <label for="username">Username</label><br>
@@ -37,4 +41,7 @@
     <div class="control_row">
       <input type="submit" name="Login" value="Login"/>
     </div>
-  </form>
+    </form>
+    </div>
+</body>
+</html>

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Tyler Peek | Home</title>
-    <link href="/static/style.css" rel="stylesheet" href="style.css">
+    <link href="/static/style.css" rel="stylesheet">
     <link href='http://fonts.googleapis.com/css?family=Homemade+Apple' rel='stylesheet' type='text/css'>
   </head>
   <body>
@@ -27,7 +27,7 @@
     <div id="wrapper">
 
 
-<h3>Entries</h3>
+<h3>Journal Entries</h3>
   {% for entry in entries %}
   <article class="entry-link" id="entry={{entry.id}}">
     <a href="{{ request.route_url('detail') }}"><h4>{{ entry.created.strftime('%b. %d, %Y') }}  ----  {{ entry.title }}</h4></a>

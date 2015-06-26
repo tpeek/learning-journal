@@ -3,8 +3,11 @@
   <head>
     <meta charset="utf-8">
     <title>Tyler Peek | Add</title>
-    <link href="/static/style.css" rel="stylesheet" href="style.css">
+    <link href="/static/style.css" rel="stylesheet">
     <link href='http://fonts.googleapis.com/css?family=Homemade+Apple' rel='stylesheet' type='text/css'>
+    {% if not request.authenticated_userid %}
+      <meta http-equiv="refresh" content="0; url={{ request.route_url('home') }}" />
+    {% endif %}
   </head>
   <body>
     <header>
@@ -15,6 +18,7 @@
       <nav>
         <ul>
           <li><a href="{{ request.route_url('home') }}">Home</a></li>
+          <li><a href="{{ request.route_url('logout') }}">Log Out</a></li>
         </ul>
       </nav>
     </header>
@@ -38,6 +42,5 @@
           </div>
         </form>
         </aside>
-
       </section>
     </div>

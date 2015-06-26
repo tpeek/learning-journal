@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Tyler Peek | Detail</title>
-    <link href="/static/style.css" rel="stylesheet" href="style.css">
+    <link href="/static/style.css" rel="stylesheet">
     <link href='http://fonts.googleapis.com/css?family=Homemade+Apple' rel='stylesheet' type='text/css'>
   </head>
   <body>
@@ -15,15 +15,17 @@
       <nav>
         <ul>
           <li><a href="{{ request.route_url('home') }}">Home</a></li>
-          <li><a href="{{ request.route_url('detail') }}" class="selected">Detail</a></li>
-          <li><a href="{{ request.route_url('add') }}">Add</a></li>
+          {% if request.authenticated_userid %}
+            <li><a href="{{ request.route_url('add') }}">Add</a></li>
+            <li><a href="{{ request.route_url('logout') }}">Log Out</a></li>
+          {%- endif %}
           <!-- to be added later<li><a href="edit.html">Edit</a></li> -->
         </ul>
       </nav>
     </header>
     <div id="wrapper">
       <section>
-This will work soon :)
+<p>This will work soon :)</p>
       </section>
       <footer>
         </a>
