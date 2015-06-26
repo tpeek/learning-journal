@@ -1,20 +1,40 @@
-{% extends "base.jinja2" %}
-{% block body %}
-  <h2>Login</h2>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Tyler Peek | Login</title>
+    <link href="/static/style.css" rel="stylesheet" href="style.css">
+    <link href='http://fonts.googleapis.com/css?family=Homemade+Apple' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <header>
+      <a href="{{ request.route_url('home') }}" id="logo">
+        <h1>Tyler Peek</h1>
+        <h2>Python Developer</h2>
+      </a>
+
+            <nav>
+        <ul>
+          <li><a href="{{ request.route_url('home') }}" class="selected">Home</a></li>
+        </ul>
+      </nav>
+    </header>
+
+
+  <h4>Login</h4>
   {% if error -%}
   <p class="error"><strong>Error</strong>: {{ error }}
   {%- endif %}
   <form action="{{ request.route_url('login') }}" method="POST">
     <div class="field">
-      <label for="username">Username</label>
+      <label for="username">Username</label><br>
       <input type="text" name="username" id="username"/>
     </div>
     <div class="field">
-      <label for="password">Password</label>
+      <label for="password">Password</label><br>
       <input type="password" name="password" id="password"/>
     </div>
     <div class="control_row">
       <input type="submit" name="Login" value="Login"/>
     </div>
   </form>
-{% endblock %}

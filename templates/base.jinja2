@@ -8,28 +8,23 @@
   </head>
   <body>
     <header>
-      <a href="index.html" id="logo">
+      <a href="{{ request.route_url('home') }}" id="logo">
         <h1>Tyler Peek</h1>
         <h2>Python Developer</h2>
       </a>
       <nav>
         <ul>
           <li><a href="{{ request.route_url('home') }}" class="selected">Home</a></li>
-          <li><a href="{{ request.route_url('add') }}">Add</a></li>
+            {% if request.authenticated_userid %}
+              <li><a href="{{ request.route_url('add') }}">Add</a></li>
+              <li><a href="{{ request.route_url('logout') }}">Log Out</a></li>
+            {% else %}
+              <li><a href="{{ request.route_url('login') }}">Login</a></li>
+            {% endif %}
         </ul>
       </nav>
     </header>
     <div id="wrapper">
-      <section>
-        <aside id="user-controls">
-          <ul>
-          {% if not request.authenticated_userid %}
-            <li><a href="{{ request.route_url('login') }}">log in</a></li>
-          {% else %}
-            <li><a href="{{ request.route_url('logout') }}">log out</a></li>
-          {% endif %}
-          </ul>
-        </aside>
 
 
 <h3>Entries</h3>
@@ -49,4 +44,3 @@
     </div>
   </body>
 </html>
-
