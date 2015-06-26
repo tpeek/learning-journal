@@ -55,12 +55,6 @@ class Entry(Base):
         return session.query(cls).order_by(cls.created.desc()).all()
 
 
-# @view_config(route_name='home', renderer='string')
-# def home(request):
-#     # import pdb; pdb.set_trace()
-#     return "Hello World"
-
-
 def do_login(request):
     username = request.params.get('username', None)
     password = request.params.get('password', None)
@@ -80,8 +74,24 @@ def other(request):
     return request.matchdict
 
 
-@view_config(route_name='home', renderer='templates/list.jinja2')
-def list_view(request):
+# @view_config(route_name='home', renderer='templates/list.jinja2')
+# def list_view(request):
+#     entries = Entry.all()
+#     return {'entries': entries}
+@view_config(route_name='home', renderer='templates/base.jinja2')
+def home(request):
+    entries = Entry.all()
+    return {'entries': entries}
+
+
+@view_config(route_name='add', renderer='templates/add.jinja2')
+def add(request):
+    entries = Entry.all()
+    return {'entries': entries}
+
+
+@view_config(route_name='detail', renderer='templates/detail.jinja2')
+def detail(request):
     entries = Entry.all()
     return {'entries': entries}
 
@@ -162,6 +172,7 @@ def main():
     config.add_route('other', '/other/{special_val}')
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
+    config.add_route('detail', '/detail')
     config.scan()
     app = config.make_wsgi_app()
     return app

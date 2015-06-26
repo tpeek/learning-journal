@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Tyler Peek | Home</title>
-    <link href="/static/style.css" rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">
     <link href='http://fonts.googleapis.com/css?family=Homemade+Apple' rel='stylesheet' type='text/css'>
   </head>
   <body>
@@ -14,8 +14,8 @@
       </a>
       <nav>
         <ul>
-          <li><a href="{{ request.route_url('home') }}" class="selected">Home</a></li>
-          <li><a href="{{ request.route_url('add') }}">Add</a></li>
+          <li><a href="index.html" class="selected">Home</a></li>
+          <li><a href="add.html">Add</a></li>
         </ul>
       </nav>
     </header>
@@ -32,16 +32,16 @@
         </aside>
 
 
-<h3>Entries</h3>
-  {% for entry in entries %}
-  <article class="entry-link" id="entry={{entry.id}}">
-    <a href="{{ request.route_url('detail') }}"><h4>{{ entry.created.strftime('%b. %d, %Y') }}  ----  {{ entry.title }}</h4></a>
-  </article>
-  {% else %}
-  <div class="entry">
-    <p><em>No entries here so far</em></p>
-  </div>
-  {% endfor %}
+
+
+        <ul id="entries">
+          <li>
+            <a href="detail.html">
+              <p>First Post  |  June 21st, 2015</p>
+            </a>
+          </li>
+        </ul>
+      </section>
       <footer>
         </a>
         <p>&copy; 2015 Tyler Peek.</p>
@@ -49,4 +49,3 @@
     </div>
   </body>
 </html>
-
