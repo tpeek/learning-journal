@@ -13,7 +13,6 @@
     entry.style.display = (entry.style.display == "table") ? "none" : "table";
   }
 
-
 </script>
 <body>
   <header>
@@ -32,35 +31,17 @@
       </ul>
     </nav>
   </header>
-
-
-
-
   <h3>Journal Entries</h3>
+  <div id="entry_field">
   {% for entry in entries %}
-  <a onclick="toggleEntry({{entry.id}});" href='#'><h4>{{ entry.created.strftime('%b. %d, %Y') }}  ----  {{ entry.title }}</h4></a>
-  <p class="entry_text" id={{ entry.id }} >{{ entry.text }}</p>
-
-  {% endfor %}
-
-
-
-
-
-  <!--   <div id="wrapper">
-  <h3>Journal Entries</h3>
-  {% for entry in entries %}
-  <article class="entry-link" id="entry={{entry.id}}">
-    <a href="{{ request.route_url('detail') }}">
-      <h4>{{ entry.created.strftime('%b. %d, %Y') }}  ----  {{ entry.title }}</h4>
-    </a>
-    <p>{{ entry.text }}</p>
-  </article>
+    <a onclick="toggleEntry({{entry.id}});" href='#'><h4>{{ entry.created.strftime('%b. %d, %Y') }}  ----  {{ entry.title }}</h4></a>
+    <p class="entry_text" id={{ entry.id }} >{{ entry.text }}</p>
   {% else %}
-  <div class="entry">
-    <p><em>No entries here so far</em></p>
+    <div class="entry">
+      <p><em>No entries here so far</em></p>
+    </div>
+  {% endfor %}
   </div>
-  {% endfor %} -->
   <footer>
   </a>
   <p>&copy; 2015 Tyler Peek.</p>
