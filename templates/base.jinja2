@@ -9,10 +9,9 @@
 <script type="text/javascript">
 
   function toggleEntry(id) {
-    var entry = document.getElementById(id.toString());
+    var entry = document.getElementById(id);
     entry.style.display = (entry.style.display == "table") ? "none" : "table";
   }
-
 
 
 </script>
@@ -24,12 +23,11 @@
     </a>
     <nav>
       <ul>
-        <li><a href="{{ request.route_url('home') }}" class="selected">Home</a></li>
         {% if request.authenticated_userid %}
-        <li><a href="{{ request.route_url('add') }}">Add</a></li>
-        <li><a href="{{ request.route_url('logout') }}">Log Out</a></li>
+        <li><a id="add" href="{{ request.route_url('add') }}">Add</a></li>
+        <li><a id="logout" href="{{ request.route_url('logout') }}">Log Out</a></li>
         {% else %}
-        <li><a href="{{ request.route_url('login') }}">Login</a></li>
+        <li><a id="login" href="{{ request.route_url('login') }}">Login</a></li>
         {% endif %}
       </ul>
     </nav>

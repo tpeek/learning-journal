@@ -100,6 +100,10 @@ PAGE HOME
   list-style: none;
 }
 
+.entry_text {
+  display: none;
+}
+
 /**************************
 PAGE ADD
 **************************/
@@ -121,21 +125,19 @@ PAGE ADD
 
 
 /**************************
-PAGE EDIT
+PAGE ADD
 **************************/
+#add_field {
+  text-align: center;
+}
 
 
-
-
-/**************************
-PAGE DETAIL
-**************************/
 
 
 /**************************
 PAGE LOGIN
 **************************/
-#login {
+#login_field {
   text-align: center;
 }
 
@@ -191,6 +193,3 @@ nav a.selected, nav a:hover {
 Test
 **************************/
 
-.entry_text {
-  display: none;
-}

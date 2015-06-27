@@ -6,6 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.exc import IntegrityError
 from pyramid import testing
 from cryptacular.bcrypt import BCRYPTPasswordManager
+from bs4 import BeautifulSoup
 
 TEST_DATABASE_URL = os.environ.get(
     'DATABASE_URL',
@@ -141,33 +142,33 @@ def test_read_entries_one(db_session):
         assert isinstance(entry, journal.Entry)
 
 
-# def test_empty_listing(app):
-#     response = app.get('/')
-#     assert response.status_code == 200
-#     actual = response.body
-#     expected = 'No entries here so far'
-#     assert expected in actual
+def test_empty_listing(app):
+    response = app.get('/')
+    assert response.status_code == 200
+    actual = response.body
+    expected = 'No entries here so far'
+    assert expected in actual
 
 
-# def test_listing(app, entry):
-#     response = app.get('/')
-#     assert response.status_code == 200
-#     actual = response.body
-#     for field in ['title', 'text']:
-#         expected = getattr(entry, field, 'absent')
-#         assert expected in actual
+def test_listing(app, entry):
+    response = app.get('/')
+    assert response.status_code == 200
+    actual = response.body
+    for field in ['title', 'text']:
+        expected = getattr(entry, field, 'absent')
+        assert expected in actual
 
 
-# def test_post_to_add_view(app):
-#     entry_data = {
-#         'title': 'Hello there',
-#         'text': 'This is a post',
-#     }
-#     response = app.post('/add', params=entry_data, status='3*')
-#     redirected = response.follow()
-#     actual = redirected.body
-#     for expected in entry_data.values():
-#         assert expected in actual
+def test_post_to_add_view(app):
+    entry_data = {
+        'title': 'Hello there',
+        'text': 'This is a post',
+    }
+    response = app.post('/add', params=entry_data, status='3*')
+    redirected = response.follow()
+    actual = redirected.body
+    for expected in entry_data.values():
+        assert expected in actual
 
 
 def test_add_no_params(app):
@@ -175,10 +176,10 @@ def test_add_no_params(app):
     assert 'IntegrityError' in response.body
 
 
-# def test_do_login_success(auth_req):
-#     from journal import do_login
-#     auth_req.params = {'username': 'admin', 'password': 'secret'}
-#     assert do_login(auth_req)
+def test_do_login_success(auth_req):
+    from journal import do_login
+    auth_req.params = {'username': 'admin', 'password': 'secret'}
+    assert do_login(auth_req)
 
 
 def test_do_login_bad_pass(auth_req):
@@ -200,8 +201,6 @@ def test_do_login_missing_params(auth_req):
         with pytest.raises(ValueError):
             do_login(auth_req)
 
-INPUT_BTN = '<input type="submit" value="Share" name="Share"/>'
-
 
 def login_helper(username, password, app):
     """encapsulate app login for reuse in tests
@@ -215,33 +214,43 @@ def login_helper(username, password, app):
 def test_start_as_anonymous(app):
     response = app.get('/', status=200)
     actual = response.body
-    assert INPUT_BTN not in actual
+    soup_actual = BeautifulSoup(actual)
+    assert soup_actual.find(id="logout") is None
+    assert soup_actual.find(id="add") is None
+    assert soup_actual.find(id="login") is not None
 
 
-# def test_login_success(app):
-#     username, password = ('admin', 'secret')
-#     redirect = login_helper(username, password, app)
-#     assert redirect.status_code == 302
-#     response = redirect.follow()
-#     assert response.status_code == 200
-#     actual = response.body
-#     assert INPUT_BTN in actual
+def test_login_success(app):
+    username, password = ('admin', 'secret')
+    redirect = login_helper(username, password, app)
+    assert redirect.status_code == 302
+    response = redirect.follow()
+    assert response.status_code == 200
+    actual = response.body
+    soup_actual = BeautifulSoup(actual)
+    assert soup_actual.find(id="login") is None
+    assert soup_actual.find(id="logout") is not None
+    assert soup_actual.find(id="add") is not None
 
 
-# def test_login_fails(app):
-#     username, password = ('admin', 'wrong')
-#     response = login_helper(username, password, app)
-#     assert response.status_code == 200
-#     actual = response.body
-#     assert "Login Failed" in actual
-#     assert INPUT_BTN not in actual
+def test_login_fails(app):
+    username, password = ('admin', 'wrong')
+    response = login_helper(username, password, app)
+    assert response.status_code == 200
+    actual = response.body
+    soup_actual = BeautifulSoup(actual)
+    assert "Login Failed" in actual
+    assert soup_actual.find(id="login") is None
+    assert soup_actual.find(id="logout") is None
+    assert soup_actual.find(id="add") is None
 
 
-# def test_logout(app):
-#     # re-use existing code to ensure we are logged in when we begin
-#     test_login_success(app)
-#     redirect = app.get('/logout', status="3*")
-#     response = redirect.follow()
-#     assert response.status_code == 200
-#     actual = response.body
-#     assert INPUT_BTN not in actual
+def test_logout(app):
+    # re-use existing code to ensure we are logged in when we begin
+    test_login_success(app)
+    redirect = app.get('/logout', status="3*")
+    response = redirect.follow()
+    assert response.status_code == 200
+    actual = response.body
+    assert "Login" in actual
+    assert "Log Out" not in actual
