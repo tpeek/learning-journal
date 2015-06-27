@@ -1,38 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Python Learning Journal</title>
-    <!--[if lt IE 9]>
-    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link href="/static/style.css" rel="stylesheet" type="text/css">
-  </head>
-  <body>
-    <header>
-      <aside id="user-controls">
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Tyler Peek | Home</title>
+  <link href="/static/style.css" rel="stylesheet">
+  <link href='http://fonts.googleapis.com/css?family=Homemade+Apple' rel='stylesheet' type='text/css'>
+</head>
+<script type="text/javascript">
+
+  function toggleEntry(id) {
+    var entry = document.getElementById(id);
+    entry.style.display = (entry.style.display == "table") ? "none" : "table";
+  }
+
+</script>
+<body>
+  <header>
+    <a href="{{ request.route_url('home') }}" id="logo">
+      <h1>Tyler Peek</h1>
+      <h2>Python Developer</h2>
+    </a>
+    <nav>
       <ul>
-      {% if not request.authenticated_userid %}
-        <li><a href="{{ request.route_url('login') }}">log in</a></li>
-      {% else %}
-        <li><a href="{{ request.route_url('logout') }}">log out</a></li>
-      {% endif %}
+        {% if request.authenticated_userid %}
+        <li><a id="add" href="{{ request.route_url('add') }}">Add</a></li>
+        <li><a id="logout" href="{{ request.route_url('logout') }}">Log Out</a></li>
+        {% else %}
+        <li><a id="login" href="{{ request.route_url('login') }}">Login</a></li>
+        {% endif %}
       </ul>
-    </aside>
-      <nav>
-        <ul>
-          <li><a href="/">Home</a></li>
-        </ul>
-      </nav>
-    </header>
-    <main>
-      <h1>My Python Journal</h1>
-      <section id="content">
-      {% block body %}{% endblock %}
-      </section>
-    </main>
-    <footer>
-      <p>Created in the Code Fellows Python Dev Accelerator</p>
-    </footer>
-  </body>
+    </nav>
+  </header>
+  <h3>Journal Entries</h3>
+  <div id="entry_field">
+  {% for entry in entries %}
+    <a onclick="toggleEntry({{entry.id}});" href='#'><h4>{{ entry.created.strftime('%b. %d, %Y') }}  ----  {{ entry.title }}</h4></a>
+    <p class="entry_text" id={{ entry.id }} >{{ entry.text }}</p>
+  {% else %}
+    <div class="entry">
+      <p><em>No entries here so far</em></p>
+    </div>
+  {% endfor %}
+  </div>
+  <footer>
+  </a>
+  <p>&copy; 2015 Tyler Peek.</p>
+</footer>
+</div>
+</body>
 </html>

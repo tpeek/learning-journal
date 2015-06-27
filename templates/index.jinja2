@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Tyler Peek | Home</title>
+    <link rel="stylesheet" href="style.css">
+    <link href='http://fonts.googleapis.com/css?family=Homemade+Apple' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <header>
+      <a href="index.html" id="logo">
+        <h1>Tyler Peek</h1>
+        <h2>Python Developer</h2>
+      </a>
+      <nav>
+        <ul>
+          <li><a href="index.html" class="selected">Home</a></li>
+          <li><a href="add.html">Add</a></li>
+        </ul>
+      </nav>
+    </header>
+    <div id="wrapper">
+      <section>
+        <aside id="user-controls">
+          <ul>
+          {% if not request.authenticated_userid %}
+            <li><a href="{{ request.route_url('login') }}">log in</a></li>
+          {% else %}
+            <li><a href="{{ request.route_url('logout') }}">log out</a></li>
+          {% endif %}
+          </ul>
+        </aside>
+
+
+
+
+        <ul id="entries">
+          <li>
+            <a href="detail.html">
+              <p>First Post  |  June 21st, 2015</p>
+            </a>
+          </li>
+        </ul>
+      </section>
+      <footer>
+        </a>
+        <p>&copy; 2015 Tyler Peek.</p>
+      </footer>
+    </div>
+  </body>
+</html>
