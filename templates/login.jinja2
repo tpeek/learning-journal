@@ -21,19 +21,19 @@
       </ul>
     </nav>
   </header>
+  <div id="login">
   <h4>Login</h4>
   {% if error -%}
   <p class="error"><strong>Error</strong>: {{ error }}</p>
   {%- endif %}
-  <div class="wrapper">
     <form action="{{ request.route_url('login') }}" method="POST">
       <div class="field">
-        <label for="username">Username</label><br>
-        <input type="text" name="username" id="username"/>
+        <label for="username">Username</label>
+        <input type="text" name="username" id="username"/><br><br>
       </div>
       <div class="field">
-        <label for="password">Password</label><br>
-        <input type="password" name="password" id="password"/>
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password"/><br><br>
       </div>
       <div class="control_row">
         <input type="submit" name="Login" value="Login"/>

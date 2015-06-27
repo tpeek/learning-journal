@@ -6,6 +6,16 @@
   <link href="/static/style.css" rel="stylesheet">
   <link href='http://fonts.googleapis.com/css?family=Homemade+Apple' rel='stylesheet' type='text/css'>
 </head>
+<script type="text/javascript">
+
+  function toggleEntry(id) {
+    var entry = document.getElementById(id.toString());
+    entry.style.display = (entry.style.display == "table") ? "none" : "table";
+  }
+
+
+
+</script>
 <body>
   <header>
     <a href="{{ request.route_url('home') }}" id="logo">
@@ -24,21 +34,39 @@
       </ul>
     </nav>
   </header>
-  <div id="wrapper">
-    <h3>Journal Entries</h3>
-    {% for entry in entries %}
-    <article class="entry-link" id="entry={{entry.id}}">
-      <a href="{{ request.route_url('detail') }}"><h4>{{ entry.created.strftime('%b. %d, %Y') }}  ----  {{ entry.title }}</h4></a>
-    </article>
-    {% else %}
-    <div class="entry">
-      <p><em>No entries here so far</em></p>
-    </div>
-    {% endfor %}
-    <footer>
+
+
+
+
+  <h3>Journal Entries</h3>
+  {% for entry in entries %}
+  <a onclick="toggleEntry({{entry.id}});" href='#'><h4>{{ entry.created.strftime('%b. %d, %Y') }}  ----  {{ entry.title }}</h4></a>
+  <p class="entry_text" id={{ entry.id }} >{{ entry.text }}</p>
+
+  {% endfor %}
+
+
+
+
+
+  <!--   <div id="wrapper">
+  <h3>Journal Entries</h3>
+  {% for entry in entries %}
+  <article class="entry-link" id="entry={{entry.id}}">
+    <a href="{{ request.route_url('detail') }}">
+      <h4>{{ entry.created.strftime('%b. %d, %Y') }}  ----  {{ entry.title }}</h4>
     </a>
-    <p>&copy; 2015 Tyler Peek.</p>
-  </footer>
+    <p>{{ entry.text }}</p>
+  </article>
+  {% else %}
+  <div class="entry">
+    <p><em>No entries here so far</em></p>
+  </div>
+  {% endfor %} -->
+  <footer>
+  </a>
+  <p>&copy; 2015 Tyler Peek.</p>
+</footer>
 </div>
 </body>
 </html>

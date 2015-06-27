@@ -132,6 +132,13 @@ PAGE DETAIL
 **************************/
 
 
+/**************************
+PAGE LOGIN
+**************************/
+#login {
+  text-align: center;
+}
+
 
 /**************************
 COLORS
@@ -140,7 +147,8 @@ COLORS
 /* Site Body */
 body {
   background-color: #ffe6b5;
-  color: #999;
+  color: #666;
+  text-indent: 50px;
 }
 
 /* Orange Header */
@@ -176,4 +184,13 @@ nav a, nav a:visited {
 
 nav a.selected, nav a:hover {
   color: #333;
+}
+
+
+/**************************
+Test
+**************************/
+
+.entry_text {
+  display: none;
 }
