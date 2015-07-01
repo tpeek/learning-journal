@@ -81,8 +81,16 @@ def home(request):
 
 @view_config(route_name='add', renderer='templates/add.jinja2')
 def add(request):
-    entries = Entry.all()
-    return {'entries': entries}
+    if request.method == 'POST':
+        title = request.params.get('title')
+        text = request.params.get('text')
+        if not (title == "" or text == ""):
+            Entry.write(title=title, text=text)
+            return HTTPFound(request.route_url('home'))
+        else:
+            return {'title': title, 'text': text}
+    else:
+        return {'title': '', 'text': ''}
 
 
 @view_config(route_name='detail', renderer='templates/detail.jinja2')
@@ -91,12 +99,12 @@ def detail(request):
     return {'entries': entries}
 
 
-@view_config(route_name='add', request_method='POST')
-def add_entry(request):
-    title = request.params.get('title')
-    text = request.params.get('text')
-    Entry.write(title=title, text=text)
-    return HTTPFound(request.route_url('home'))
+# @view_config(route_name='add', request_method='POST')
+# def add_entry(request):
+#     title = request.params.get('title')
+#     text = request.params.get('text')
+#     Entry.write(title=title, text=text)
+#     return HTTPFound(request.route_url('home'))
 
 
 @view_config(context=DBAPIError)
@@ -119,11 +127,9 @@ def login(request):
             authenticated = do_login(request)
         except ValueError as e:
             error = str(e)
-
         if authenticated:
             headers = remember(request, username)
             return HTTPFound(request.route_url('home'), headers=headers)
-
     return {'error': error, 'username': username}
 
 

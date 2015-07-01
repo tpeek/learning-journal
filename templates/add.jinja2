@@ -24,17 +24,20 @@
   </header>
   <div id="add_field">
   <section>
+    {% if title or text %}
+    <p>Both fields are required</p>
+    {% endif %}
       <aside>
         <form action="{{ request.route_url('add') }}" method="POST" class="add_entry">
           <div class="field">
             <p>Entry Title</p>
             <label for="title"></label>
-            <input type="text" size="30" name="title" id="title"/>
+            <input type="text" size="30" name="title" id="title" value={{title}}>
           </div>
           <div class="field">
             <p>How was your day?</p>
             <label for="text"></label>
-            <textarea name="text" id="text" rows="10" cols="70"></textarea>
+            <textarea name="text" id="text" rows="10" cols="70">{{text}}</textarea>
           </div>
           <div class="control_row">
             <input type="submit" value="Share" name="Share"/>
