@@ -70,14 +70,9 @@ def do_login(request):
 
 @view_config(route_name='other', renderer='string')
 def other(request):
-    #    import pdb; pdb.set_trace()
     return request.matchdict
 
 
-# @view_config(route_name='home', renderer='templates/list.jinja2')
-# def list_view(request):
-#     entries = Entry.all()
-#     return {'entries': entries}
 @view_config(route_name='home', renderer='templates/base.jinja2')
 def home(request):
     entries = Entry.all()
