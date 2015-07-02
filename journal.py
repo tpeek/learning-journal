@@ -54,6 +54,13 @@ class Entry(Base):
             session = DBSession
         return session.query(cls).order_by(cls.created.desc()).all()
 
+    @classmethod
+    def get_entry(cls, entry_id, session=None):
+        if session is None:
+            session = DBSession
+        entry = session.query(cls).filter(Entry.id == entry_id).first()
+        return entry.title, entry.text
+
 
 def do_login(request):
     username = request.params.get('username', None)
@@ -66,11 +73,6 @@ def do_login(request):
         hashed = settings.get('auth.password', '')
         return manager.check(hashed, password)
     return False
-
-
-@view_config(route_name='other', renderer='string')
-def other(request):
-    return request.matchdict
 
 
 @view_config(route_name='home', renderer='templates/base.jinja2')
@@ -95,16 +97,9 @@ def add(request):
 
 @view_config(route_name='detail', renderer='templates/detail.jinja2')
 def detail(request):
-    entries = Entry.all()
-    return {'entries': entries}
-
-
-# @view_config(route_name='add', request_method='POST')
-# def add_entry(request):
-#     title = request.params.get('title')
-#     text = request.params.get('text')
-#     Entry.write(title=title, text=text)
-#     return HTTPFound(request.route_url('home'))
+    entry_id = request.matchdict['entry_id']
+    title, text = Entry.get_entry(entry_id)
+    return {'title': title, 'text': text}
 
 
 @view_config(context=DBAPIError)
@@ -170,10 +165,9 @@ def main():
     config.add_static_view('static', os.path.join(HERE, 'static'))
     config.add_route('home', '/')
     config.add_route('add', '/add')
-    config.add_route('other', '/other/{special_val}')
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
-    config.add_route('detail', '/detail')
+    config.add_route('detail', 'detail/{entry_id}')
     config.scan()
     app = config.make_wsgi_app()
     return app

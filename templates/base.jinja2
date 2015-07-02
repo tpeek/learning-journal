@@ -34,7 +34,7 @@
   <h3>Journal Entries</h3>
   <div id="entry_field">
   {% for entry in entries %}
-    <a onclick="toggleEntry({{entry.id}});" href='#'><h4>{{ entry.created.strftime('%b. %d, %Y') }}  ----  {{ entry.title }}</h4></a>
+    <a onclick="toggleEntry({{entry.id}});" href="{{ request.route_url('detail', entry_id=entry.id) }}"><h4>{{ entry.created.strftime('%b. %d, %Y') }}  ----  {{ entry.title }}</h4></a>
     <p class="entry_text" id={{ entry.id }} >{{ entry.text }}</p>
   {% else %}
     <div class="entry">
