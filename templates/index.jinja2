@@ -14,6 +14,7 @@
     </a>
     <nav>
       <ul>
+        <li><a id="home" class="selected">Home</a></li>
         {% if request.authenticated_userid %}
         <li><a id="add" href="{{ request.route_url('add') }}">Add</a></li>
         <li><a id="logout" href="{{ request.route_url('logout') }}">Log Out</a></li>
@@ -26,7 +27,11 @@
   <h3>Journal Entries</h3>
   <div id="entry_field">
   {% for entry in entries %}
-    <a href="{{ request.route_url('detail', entry_id=entry.id) }}"><h4>{{ entry.created.strftime('%b. %d, %Y') }}  ----  {{ entry.title }}</h4></a>
+    <a href="{{ request.route_url('detail', entry_id=entry.id) }}">
+      <h4>
+        {{ entry.created.strftime('%b. %d, %Y') }}  ----  {{ entry.title }}
+      </h4>
+    </a>
   {% else %}
     <div class="entry">
       <p><em>No entries here so far</em></p>

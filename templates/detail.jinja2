@@ -17,15 +17,15 @@
         <li><a href="{{ request.route_url('home') }}">Home</a></li>
         {% if request.authenticated_userid %}
         <li><a href="{{ request.route_url('add') }}">Add</a></li>
+        <li><a href="{{ request.route_url('edit', entry_id=id) }}">Edit</a></li>
         <li><a href="{{ request.route_url('logout') }}">Log Out</a></li>
         {%- endif %}
-        <!-- to be added later<li><a href="edit.html">Edit</a></li> -->
       </ul>
     </nav>
   </header>
   <div id="wrapper">
     <section>
-      <h3>{{ title }}</h3>
+      <h3>{{ title }} ---- {{ time }}</h3>
       <p>{{ text}}</p>
     </section>
     <footer>

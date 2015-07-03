@@ -60,7 +60,7 @@ class Entry(Base):
         if session is None:
             session = DBSession
         entry = session.query(cls).filter(Entry.id == entry_id).first()
-        return entry.title, entry.text
+        return entry.title, entry.text, entry.created.strftime('%b. %d, %Y')
 
 
 def do_login(request):
@@ -76,7 +76,7 @@ def do_login(request):
     return False
 
 
-@view_config(route_name='home', renderer='templates/base.jinja2')
+@view_config(route_name='home', renderer='templates/index.jinja2')
 def home(request):
     entries = Entry.all()
     return {'entries': entries}
@@ -99,15 +99,15 @@ def add(request):
 @view_config(route_name='detail', renderer='templates/detail.jinja2')
 def detail(request):
     entry_id = request.matchdict['entry_id']
-    title, text = Entry.get_entry(entry_id)
-    return {'title': title, 'text': text}
+    title, text, time = Entry.get_entry(entry_id)
+    return {'title': title, 'text': text, 'id': entry_id, 'time': time}
 
 
 @view_config(route_name='edit', renderer='templates/edit.jinja2')
 def edit(request):
     if request.method == 'GET':
         entry_id = request.matchdict['entry_id']
-        title, text = Entry.get_entry(entry_id)
+        title, text, time = Entry.get_entry(entry_id)
         return {'title': title, 'text': text}
 
 

@@ -14,10 +14,12 @@
       </a>
       <nav>
         <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="detail.html">Detail</a></li>
-          <li><a href="add.html">Add</a></li>
-          <li><a class="selected">Edit</a></li>
+          <li><a id="home" href="{{ request.route_url('home') }}">Home</a></li>
+          {% if request.authenticated_userid %}
+          <li><a id="add" href="{{ request.route_url('add') }}">Add</a></li>
+          <li><a id="edit" class="selected">Edit</a></li>
+          <li><a id="logout" href="{{ request.route_url('logout') }}">Log Out</a></li>
+          {% endif %}
         </ul>
       </nav>
     </header>
