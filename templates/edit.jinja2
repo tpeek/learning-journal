@@ -2,8 +2,8 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Tyler Peek | Home</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Tyler Peek | Edit</title>
+    <link href="/static/style.css" rel="stylesheet">
     <link href='http://fonts.googleapis.com/css?family=Homemade+Apple' rel='stylesheet' type='text/css'>
   </head>
   <body id="add">
@@ -17,7 +17,7 @@
           <li><a href="index.html">Home</a></li>
           <li><a href="detail.html">Detail</a></li>
           <li><a href="add.html">Add</a></li>
-          <li><a href="edit.html" class="selected">Edit</a></li>
+          <li><a class="selected">Edit</a></li>
         </ul>
       </nav>
     </header>
@@ -26,15 +26,15 @@
         <form>
 
           Journal Entry Title:<br>
-          <input type="text" name="Title" id="title" value="First Post  |  June 21st, 2015">
+          <input type="text" name="Title" id="title" value="{{title}}">
           <br>
           <br>
           How was your day?<br>
-          <textarea id="textbox">Hello! If you are reading this, then you must be one totally rad person! I can't wait to start learning at Code Fellows.</textarea>
+          <textarea id="textbox">{{text}}</textarea>
           <br>
           <input type="submit">
 
-        </form> 
+        </form>
       </section>
       <footer>
         </a>

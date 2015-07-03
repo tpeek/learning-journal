@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import os
@@ -102,6 +103,14 @@ def detail(request):
     return {'title': title, 'text': text}
 
 
+@view_config(route_name='edit', renderer='templates/edit.jinja2')
+def edit(request):
+    if request.method == 'GET':
+        entry_id = request.matchdict['entry_id']
+        title, text = Entry.get_entry(entry_id)
+        return {'title': title, 'text': text}
+
+
 @view_config(context=DBAPIError)
 def db_exception(context, request):
     from pyramid.response import Response
@@ -168,6 +177,7 @@ def main():
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
     config.add_route('detail', 'detail/{entry_id}')
+    config.add_route('edit', 'edit/{entry_id}')
     config.scan()
     app = config.make_wsgi_app()
     return app

@@ -6,14 +6,6 @@
   <link href="/static/style.css" rel="stylesheet">
   <link href='http://fonts.googleapis.com/css?family=Homemade+Apple' rel='stylesheet' type='text/css'>
 </head>
-<script type="text/javascript">
-
-  function toggleEntry(id) {
-    var entry = document.getElementById(id);
-    entry.style.display = (entry.style.display == "table") ? "none" : "table";
-  }
-
-</script>
 <body>
   <header>
     <a href="{{ request.route_url('home') }}" id="logo">
@@ -34,7 +26,7 @@
   <h3>Journal Entries</h3>
   <div id="entry_field">
   {% for entry in entries %}
-    <a onclick="toggleEntry({{entry.id}});" href="{{ request.route_url('detail', entry_id=entry.id) }}"><h4>{{ entry.created.strftime('%b. %d, %Y') }}  ----  {{ entry.title }}</h4></a>
+    <a href="{{ request.route_url('detail', entry_id=entry.id) }}"><h4>{{ entry.created.strftime('%b. %d, %Y') }}  ----  {{ entry.title }}</h4></a>
     <p class="entry_text" id={{ entry.id }} >{{ entry.text }}</p>
   {% else %}
     <div class="entry">
