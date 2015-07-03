@@ -62,6 +62,15 @@ class Entry(Base):
         entry = session.query(cls).filter(Entry.id == entry_id).first()
         return entry.title, entry.text, entry.created.strftime('%b. %d, %Y')
 
+    @classmethod
+    def edit_entry(cls, entry_id, title, text, session=None):
+        if session is None:
+            session = DBSession
+        entry = session.query(cls).get(entry_id)
+        entry.title = title
+        entry.text = text
+        return entry
+
 
 def do_login(request):
     username = request.params.get('username', None)
@@ -105,10 +114,19 @@ def detail(request):
 
 @view_config(route_name='edit', renderer='templates/edit.jinja2')
 def edit(request):
+    entry_id = request.matchdict['entry_id']
     if request.method == 'GET':
-        entry_id = request.matchdict['entry_id']
         title, text, time = Entry.get_entry(entry_id)
-        return {'title': title, 'text': text}
+        return {'title': title, 'text': text, 'id': entry_id}
+
+    if request.method == 'POST':
+        title = request.params.get('title')
+        text = request.params.get('text')
+        if not (title == "" or text == ""):
+            Entry.edit_entry(entry_id, title, text)
+            return HTTPFound(request.route_url('home'))
+        else:
+            return {'title': title, 'text': text, 'id': entry_id}
 
 
 @view_config(context=DBAPIError)

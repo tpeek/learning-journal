@@ -25,18 +25,23 @@
     </header>
     <div id="wrapper">
       <section>
-        <form>
 
-          Journal Entry Title:<br>
-          <input type="text" name="Title" id="title" value="{{title}}">
-          <br>
-          <br>
-          How was your day?<br>
-          <textarea id="textbox">{{text}}</textarea>
-          <br>
-          <input type="submit">
-
+        <form action="{{ request.route_url('edit', entry_id=id) }}" method="POST" class="edit_entry">
+          <div class="field">
+            <p>Entry Title</p>
+            <label for="title"></label>
+            <input type="text" size="30" name="title" id="title" value={{title}}>
+          </div>
+          <div class="field">
+            <p>How was your day?</p>
+            <label for="text"></label>
+            <textarea name="text" id="text" rows="10" cols="70">{{text}}</textarea>
+          </div>
+          <div class="control_row">
+            <input type="submit" value="Share" name="Share"/>
+          </div>
         </form>
+
       </section>
       <footer>
         </a>
