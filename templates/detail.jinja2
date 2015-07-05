@@ -17,17 +17,17 @@
       <ul>
         <li><a href="{{ request.route_url('home') }}">Home</a></li>
         {% if request.authenticated_userid %}
-        <li><a href="{{ request.route_url('add') }}">Add</a></li>
-        <li><a href="{{ request.route_url('edit', entry_id=id) }}">Edit</a></li>
-        <li><a href="{{ request.route_url('logout') }}">Log Out</a></li>
+        <li><a id="add" href="{{ request.route_url('add') }}">Add</a></li>
+        <li><a id="edit" href="{{ request.route_url('edit', entry_id=id) }}">Edit</a></li>
+        <li><a id="logout" href="{{ request.route_url('logout') }}">Log Out</a></li>
         {%- endif %}
       </ul>
     </nav>
   </header>
   <div id="wrapper">
     <section class="highlight">
-      <h3>{{ title }} ---- {{ time }}</h3>
-      <p>{{ text|safe }}</p>
+      <h3 class="title">{{ title }} ---- {{ time }}</h3>
+      <p class="text">{{ text|safe }}</p>
     </section>
     <footer>
     </a>

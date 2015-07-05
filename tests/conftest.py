@@ -2,14 +2,18 @@
 from __future__ import unicode_literals
 import os
 import pytest
-from pytest_bdd import given
 from sqlalchemy import create_engine
-from sqlalchemy.exc import IntegrityError
 from pyramid import testing
 from cryptacular.bcrypt import BCRYPTPasswordManager
-from bs4 import BeautifulSoup
+from sqlalchemy.orm import scoped_session, sessionmaker
+from zope.sqlalchemy import ZopeTransactionExtension
 
 import journal
+
+
+DBSession = scoped_session(sessionmaker(
+            extension=ZopeTransactionExtension()))
+
 
 TEST_DATABASE_URL = os.environ.get(
     'DATABASE_URL',
@@ -18,7 +22,7 @@ TEST_DATABASE_URL = os.environ.get(
 os.environ['DATABASE_URL'] = TEST_DATABASE_URL
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture()
 def connection(request):
     engine = create_engine(TEST_DATABASE_URL)
     journal.Base.metadata.create_all(engine)
@@ -60,6 +64,32 @@ def entry(db_session):
     return entry
 
 
+@pytest.fixture(scope='module')
+def auth_req(request):
+    manager = BCRYPTPasswordManager()
+    settings = {
+        'auth.username': 'admin',
+        'auth.password': manager.encode('secret'),
+    }
+    testing.setUp(settings=settings)
+    req = testing.DummyRequest()
+
+    def cleanup():
+        testing.tearDown()
+    request.addfinalizer(cleanup)
+    return req
+
+
 @pytest.fixture()
 def homepage(app):
     return app.get('/')
+
+
+@pytest.fixture()
+def detail_page(app):
+    return app.get('/detail/1')
+
+
+@pytest.fixture()
+def edit_page(app):
+    return app.get('/edit/1')

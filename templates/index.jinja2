@@ -27,7 +27,7 @@
   <h3>Journal Entries</h3>
   <div id="entry_field">
   {% for entry in entries %}
-    <a href="{{ request.route_url('detail', entry_id=entry.id) }}">
+    <a class="post" href="{{ request.route_url('detail', entry_id=entry.id) }}">
       <h4>
         {{ entry.created.strftime('%b. %d, %Y') }}  ----  {{ entry.title }}
       </h4>
