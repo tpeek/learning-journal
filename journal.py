@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import os
@@ -15,6 +16,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from zope.sqlalchemy import ZopeTransactionExtension
 from sqlalchemy.exc import DBAPIError
 from cryptacular.bcrypt import BCRYPTPasswordManager
+import markdown
 
 
 DBSession = scoped_session(sessionmaker(
@@ -54,6 +56,22 @@ class Entry(Base):
             session = DBSession
         return session.query(cls).order_by(cls.created.desc()).all()
 
+    @classmethod
+    def get_entry(cls, entry_id, session=None):
+        if session is None:
+            session = DBSession
+        entry = session.query(cls).filter(Entry.id == entry_id).first()
+        return entry.title, entry.text, entry.created.strftime('%b. %d, %Y')
+
+    @classmethod
+    def edit_entry(cls, entry_id, title, text, session=None):
+        if session is None:
+            session = DBSession
+        entry = session.query(cls).get(entry_id)
+        entry.title = title
+        entry.text = text
+        return entry
+
 
 def do_login(request):
     username = request.params.get('username', None)
@@ -68,17 +86,7 @@ def do_login(request):
     return False
 
 
-@view_config(route_name='other', renderer='string')
-def other(request):
-    #    import pdb; pdb.set_trace()
-    return request.matchdict
-
-
-# @view_config(route_name='home', renderer='templates/list.jinja2')
-# def list_view(request):
-#     entries = Entry.all()
-#     return {'entries': entries}
-@view_config(route_name='home', renderer='templates/base.jinja2')
+@view_config(route_name='home', renderer='templates/index.jinja2')
 def home(request):
     entries = Entry.all()
     return {'entries': entries}
@@ -86,22 +94,41 @@ def home(request):
 
 @view_config(route_name='add', renderer='templates/add.jinja2')
 def add(request):
-    entries = Entry.all()
-    return {'entries': entries}
+    if request.method == 'POST':
+        title = request.params.get('title')
+        text = request.params.get('text')
+        if not (title == "" or text == ""):
+            Entry.write(title=title, text=text)
+            return HTTPFound(request.route_url('home'))
+        else:
+            return {'title': title, 'text': text}
+    else:
+        return {'title': '', 'text': ''}
 
 
 @view_config(route_name='detail', renderer='templates/detail.jinja2')
 def detail(request):
-    entries = Entry.all()
-    return {'entries': entries}
+    entry_id = request.matchdict['entry_id']
+    title, text, time = Entry.get_entry(entry_id)
+    text = markdown.markdown(text, extensions=['codehilite', 'fenced_code'])
+    return {'title': title, 'text': text, 'id': entry_id, 'time': time}
 
 
-@view_config(route_name='add', request_method='POST')
-def add_entry(request):
-    title = request.params.get('title')
-    text = request.params.get('text')
-    Entry.write(title=title, text=text)
-    return HTTPFound(request.route_url('home'))
+@view_config(route_name='edit', renderer='templates/edit.jinja2')
+def edit(request):
+    entry_id = request.matchdict['entry_id']
+    if request.method == 'GET':
+        title, text, time = Entry.get_entry(entry_id)
+        return {'title': title, 'text': text, 'id': entry_id}
+
+    if request.method == 'POST':
+        title = request.params.get('title')
+        text = request.params.get('text')
+        if not (title == "" or text == ""):
+            Entry.edit_entry(entry_id, title, text)
+            return HTTPFound(request.route_url('home'))
+        else:
+            return {'title': title, 'text': text, 'id': entry_id}
 
 
 @view_config(context=DBAPIError)
@@ -124,11 +151,9 @@ def login(request):
             authenticated = do_login(request)
         except ValueError as e:
             error = str(e)
-
         if authenticated:
             headers = remember(request, username)
             return HTTPFound(request.route_url('home'), headers=headers)
-
     return {'error': error, 'username': username}
 
 
@@ -169,10 +194,10 @@ def main():
     config.add_static_view('static', os.path.join(HERE, 'static'))
     config.add_route('home', '/')
     config.add_route('add', '/add')
-    config.add_route('other', '/other/{special_val}')
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
-    config.add_route('detail', '/detail')
+    config.add_route('detail', 'detail/{entry_id}')
+    config.add_route('edit', 'edit/{entry_id}')
     config.scan()
     app = config.make_wsgi_app()
     return app

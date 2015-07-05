@@ -12,29 +12,33 @@
 <body>
   <header>
     <a href="{{ request.route_url('home') }}" id="logo">
-      <h1>Tyler Peek</h1>
+      <h1 class="name">Tyler Peek</h1>
       <h2>Python Developer</h2>
     </a>
     <nav>
       <ul>
         <li><a href="{{ request.route_url('home') }}">Home</a></li>
+        <li><a id="add" class="selected">Add</a></li>
         <li><a href="{{ request.route_url('logout') }}">Log Out</a></li>
       </ul>
     </nav>
   </header>
   <div id="add_field">
   <section>
+    {% if title or text %}
+    <p>Both fields are required</p>
+    {% endif %}
       <aside>
         <form action="{{ request.route_url('add') }}" method="POST" class="add_entry">
           <div class="field">
             <p>Entry Title</p>
             <label for="title"></label>
-            <input type="text" size="30" name="title" id="title"/>
+            <input type="text" size="30" name="title" id="title" value={{title}}>
           </div>
           <div class="field">
             <p>How was your day?</p>
             <label for="text"></label>
-            <textarea name="text" id="text" rows="10" cols="70"></textarea>
+            <textarea name="text" id="text" rows="10" cols="70">{{text}}</textarea>
           </div>
           <div class="control_row">
             <input type="submit" value="Share" name="Share"/>
