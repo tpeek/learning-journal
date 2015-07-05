@@ -38,7 +38,7 @@ header {
   margin: 0;
 }
 
-h1 {
+.name {
   font-family: 'Homemade Apple', sans-serif;
   margin: 15px 0;
   font-size: 3em;
@@ -96,9 +96,9 @@ footer {
 PAGE HOME
 **************************/
 
-#wrapper li {
+/*#wrapper li {
   list-style: none;
-}
+}*/
 
 
 /**************************
@@ -163,7 +163,7 @@ nav {
 }
 
 /* Logo Text */
-h1, h2 {
+header h1, h2 {
   color: #ffe6b5;
 }
 
@@ -184,9 +184,3 @@ nav a, nav a:visited {
 nav a.selected, nav a:hover {
   color: #333;
 }
-
-
-/**************************
-Test
-**************************/
-

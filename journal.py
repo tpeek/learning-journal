@@ -16,6 +16,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from zope.sqlalchemy import ZopeTransactionExtension
 from sqlalchemy.exc import DBAPIError
 from cryptacular.bcrypt import BCRYPTPasswordManager
+import markdown
 
 
 DBSession = scoped_session(sessionmaker(
@@ -109,6 +110,7 @@ def add(request):
 def detail(request):
     entry_id = request.matchdict['entry_id']
     title, text, time = Entry.get_entry(entry_id)
+    text = markdown.markdown(text, extensions=['codehilite', 'fenced_code'])
     return {'title': title, 'text': text, 'id': entry_id, 'time': time}
 
 

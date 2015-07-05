@@ -4,12 +4,13 @@
   <meta charset="utf-8">
   <title>Tyler Peek | Detail</title>
   <link href="/static/style.css" rel="stylesheet">
+  <link href="/static/codehilite.css" rel="stylesheet">
   <link href='http://fonts.googleapis.com/css?family=Homemade+Apple' rel='stylesheet' type='text/css'>
 </head>
 <body>
   <header>
   <a href="{{ request.route_url('home') }}" id="logo">
-      <h1>Tyler Peek</h1>
+      <h1 class="name">Tyler Peek</h1>
       <h2>Python Developer</h2>
     </a>
     <nav>
@@ -24,9 +25,9 @@
     </nav>
   </header>
   <div id="wrapper">
-    <section>
+    <section class="highlight">
       <h3>{{ title }} ---- {{ time }}</h3>
-      <p>{{ text}}</p>
+      <p>{{ text|safe }}</p>
     </section>
     <footer>
     </a>
