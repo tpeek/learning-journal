@@ -150,6 +150,10 @@ body {
   text-indent: 50px;
 }
 
+h1, h2 {
+  color: #666;
+}
+
 /* Orange Header */
 header {
   background: #dd6a0a;
@@ -163,7 +167,7 @@ nav {
 }
 
 /* Logo Text */
-header h1, h2 {
+header h1, header h2 {
   color: #ffe6b5;
 }
 
