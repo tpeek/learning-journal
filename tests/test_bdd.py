@@ -37,16 +37,6 @@ def test_homepage_as_auth():
     pass
 
 
-# @scenario('features/homepage.feature',
-#           'The detail page displays relevant buttons for authorized users')
-# def test_detail_buttons_as_auth():
-#     pass
-@scenario('features/homepage.feature',
-          'An authorized user can edit an entry')
-def test_edit_as_auth():
-    pass
-
-
 #
 #  Givens
 #
@@ -91,15 +81,7 @@ def detail_page(app):
 @when('the user visits the edit page')
 def edit_page(app):
     response = app.get('/edit/1')
-    print response.html
     return response
-
-
-@when('the user edits an entry')
-def edit(app, edit_page):
-    pass
-    # app.post('/edit/1', {'title': 'Test', 'text': 'This is new'},
-    #          status='*')
 
 
 #
@@ -178,15 +160,3 @@ def no_edit_button(homepage):
     html = homepage.html
     button = html.find_all(id='edit')
     assert len(button) == 0
-
-
-@then('the detail page will change')
-def test_edit(app):
-    response = app.get('/')
-    print response.html
-#     html = detail_page.html
-#     print html
-    # title = html.find_all(class_='title')
-    # text = html.find_all(class_='text')
-    # assert title == "Test"
-    # assert text == "This is news"

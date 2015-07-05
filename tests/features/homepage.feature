@@ -38,20 +38,3 @@ Scenario: The homepage displays relevant buttons for authorized users
     When the user visits the homepage
     Then they will see a logout button
     And they will see an add button
-
-
-# Scenario: The detail page displays relevant buttons for authorized users
-#     Given an authorized user
-#     And a list of three entries
-#     When the user clicks on an entry
-#     Then they will not see a login button
-#     And they will see a logout button
-#     And they will see an edit button
-#     And they will see an add button
-
-Scenario: An authorized user can edit an entry
-    Given an authorized user
-    And a list of three entries
-    When the user visits the edit page
-    And the user edits an entry
-    # Then the the detail page will change
