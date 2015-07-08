@@ -106,6 +106,11 @@ def add(request):
         return {'title': '', 'text': ''}
 
 
+@view_config(route_name='ajax_add', renderer='templates/ajax_add.jinja2')
+def ajax_add(request):
+    return {'title': '', 'text': ''}
+
+
 @view_config(route_name='detail', renderer='templates/detail.jinja2')
 def detail(request):
     entry_id = request.matchdict['entry_id']
@@ -194,6 +199,7 @@ def main():
     config.add_static_view('static', os.path.join(HERE, 'static'))
     config.add_route('home', '/')
     config.add_route('add', '/add')
+    config.add_route('ajax_add', '/ajax_add')
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
     config.add_route('detail', 'detail/{entry_id}')
