@@ -57,10 +57,14 @@ class Entry(Base):
         return session.query(cls).order_by(cls.created.desc()).all()
 
     @classmethod
-    def get_info(cls, entry_id, session=None):
+    def get_info(cls, entry_id=None, title=None, session=None):
         if session is None:
             session = DBSession
-        entry = session.query(cls).filter(Entry.id == entry_id).first()
+        if title is None:
+            entry = session.query(cls).filter(Entry.id == entry_id).first()
+        else:
+            entry = session.query(cls).filter(Entry.id == entry_id).first()
+    ##### you have to change some stuff here so that itll return the whole entry because we need the id somethimes.
         return entry.title, entry.text, entry.created.strftime('%b. %d, %Y')
 
     @classmethod
@@ -92,23 +96,39 @@ def home(request):
     return {'entries': entries}
 
 
-@view_config(route_name='add', renderer='templates/add.jinja2')
-def add(request):
+def do_add(request, redirect):
     if request.method == 'POST':
+        print "a ok!"
         title = request.params.get('title')
         text = request.params.get('text')
+        print title, text
         if not (title == "" or text == ""):
             Entry.write(title=title, text=text)
-            return HTTPFound(request.route_url('home'))
+            if redirect:
+                return HTTPFound(request.route_url('home'))
+            else:
+                return HTTPFound(request.route_url('added'))
         else:
             return {'title': title, 'text': text}
     else:
         return {'title': '', 'text': ''}
 
 
+@view_config(route_name='add', renderer='templates/add.jinja2')
+def add(request):
+    return do_add(request, True)
+
+
 @view_config(route_name='ajax_add', renderer='templates/ajax_add.jinja2')
 def ajax_add(request):
-    return {'title': '', 'text': ''}
+    return do_add(request, False)
+
+
+@view_config(route_name='added', renderer='tmeplates/added.jinja2')
+def added(request):
+    title = request.params.get('title')
+    text = request.params.get('text')
+    return {'title': title, 'text': text}
 
 
 @view_config(route_name='detail', renderer='templates/detail.jinja2')
@@ -207,6 +227,7 @@ def main():
     config.add_route('home', '/')
     config.add_route('add', '/add')
     config.add_route('ajax_add', '/ajax_add')
+    config.add_route('added', '/added')
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
     config.add_route('detail', 'detail/{entry_id}')

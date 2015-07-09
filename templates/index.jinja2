@@ -1,56 +1,77 @@
 {% extends "base.jinja2" %}
 {% block section %}
 
+
+<nav>
+  <ul>
+    <li><a id="home" class="selected">Home</a></li>
+    {% if request.authenticated_userid %}
+    <li><a id="add" href="{{ request.route_url('add') }}">Add</a></li>
+    <li><a id="logout" href="{{ request.route_url('logout') }}">Log Out</a></li>
+    {% else %}
+    <li><a id="login" href="{{ request.route_url('login') }}">Login</a></li>
+    {% endif %}
+  </ul>
+</nav>
+</header>
+<h3>Journal Entries</h3>
+<div id="entry_field">
+  {% if request.authenticated_userid %}
+  <div id="myDiv"></div>
+  <button id="add_entry" type="button" onclick="loadXMLDoc()">Add Entry</button>
+  <button id="submit_entry" type="button" onclick="loadXMLDoc2()">Share</button>
+  {% endif %}
+  {% for entry in entries %}
+  <a class="post" href="{{ request.route_url('detail', entry_id=entry.id) }}">
+    <h4>
+      {{ entry.created.strftime('%b. %d, %Y') }}  ----  {{ entry.title }}
+    </h4>
+  </a>
+  {% else %}
+  <div class="entry">
+    <p><em>No entries here so far</em></p>
+  </div>
+  {% endfor %}
+</div>
+
+
 <script>
-function loadXMLDoc() {
-  document.getElementById('add_entry').style.display = 'none';
-xmlhttp=new XMLHttpRequest();
-  if (window.XMLHttpRequest){
-    // code for IE7+, Firefox, Chrome, Opera, Safari
-      xmlhttp=new XMLHttpRequest();
+  document.getElementById('submit_entry').style.display = 'none';
+  function loadXMLDoc() {
+    document.getElementById('add_entry').style.display = 'none';
+    xmlhttp=new XMLHttpRequest();
+    xmlhttp.open("GET","{{ request.route_url('ajax_add') }}",true);
+    xmlhttp.send();
+    xmlhttp.onreadystatechange = function () {
+    if (xmlhttp.readyState === 4) {                // 4 = Response from server has been completely loaded.
+      document.getElementById('myDiv').innerHTML = xmlhttp.responseText;
+      document.getElementById('add_entry').style.display = 'none';
+      document.getElementById('submit_entry').style.display = 'initial';
     }
-  else{
-    // code for IE6, IE5
-      xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-    }
-  xmlhttp.open("GET","{{ request.route_url('ajax_add') }}",true);
-  xmlhttp.send();
+  }
+}
+
+
+function loadXMLDoc2() {
+  document.getElementById('add_entry').style.display = 'initial';
+  var xmlhttp = new XMLHttpRequest();
+
+  var formElement = document.querySelector("form");
+  var formData = new FormData(formElement);
+
+  xmlhttp.open("POST","{{ request.route_url('ajax_add') }}",true);
+  xmlhttp.send(new FormData(formElement));
+
   xmlhttp.onreadystatechange = function () {
     if (xmlhttp.readyState === 4) {                // 4 = Response from server has been completely loaded.
-            document.getElementById('myDiv').innerHTML = xmlhttp.responseText;
-            document.getElementById('add_entry').style.display = 'none';
+      alert(xmlhttp.responseText)
+      document.getElementById('entry_field').innerHTML = xmlhttp.responseText;
+      document.getElementById('add_entry').style.display = 'initial';
+      document.getElementById('submit_entry').style.display = 'none';
+      document.getElementById('add_it').style.display = 'none';
     }
   }
 }
 </script>
-    <nav>
-      <ul>
-        <li><a id="home" class="selected">Home</a></li>
-        {% if request.authenticated_userid %}
-        <li><a id="add" href="{{ request.route_url('add') }}">Add</a></li>
-        <li><a id="logout" href="{{ request.route_url('logout') }}">Log Out</a></li>
-        {% else %}
-        <li><a id="login" href="{{ request.route_url('login') }}">Login</a></li>
-        {% endif %}
-      </ul>
-    </nav>
-  </header>
-  <h3>Journal Entries</h3>
-  <div id="entry_field">
-  {% for entry in entries %}
-    <a class="post" href="{{ request.route_url('detail', entry_id=entry.id) }}">
-      <h4>
-        {{ entry.created.strftime('%b. %d, %Y') }}  ----  {{ entry.title }}
-      </h4>
-    </a>
-  {% else %}
-    <div class="entry">
-      <p><em>No entries here so far</em></p>
-    </div>
-  {% endfor %}
-  </div>
-  {% if request.authenticated_userid %}
-    <div id="myDiv"></div>
-    <button id="add_entry" type="button" onclick="loadXMLDoc()">Add Entry</button>
-  {% endif %}
+
 {% endblock %}

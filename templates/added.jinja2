@@ -1,0 +1,4 @@
+<a class="post" href="{{ request.route_url('detail', entry_id=entry.id) }}">
+    <h4>
+      {{ entry.created.strftime('%b. %d, %Y') }}  ----  {{ entry.title }}
+    </h4>
