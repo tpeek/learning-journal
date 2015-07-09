@@ -124,17 +124,23 @@ def edit(request):
     entry_id = request.matchdict['entry_id']
     if request.method == 'GET':
         title, text, time = Entry.get_info(entry_id)
-        print title
         return {'title': title, 'text': text, 'id': entry_id}
-
     elif request.method == 'POST':
         title = request.params.get('title')
         text = request.params.get('text')
         if not (title == "" or text == ""):
             Entry.edit_entry(entry_id, title, text)
-            return HTTPFound(request.route_url('home'))
+            return HTTPFound(request.route_url('detail', entry_id=entry_id))
         else:
             return {'title': title, 'text': text, 'id': entry_id}
+
+
+@view_config(route_name='ajax_edit', renderer='templates/ajax_edit.jinja2')
+def ajax_edit(request):
+    entry_id = request.matchdict['entry_id']
+    if request.method == 'GET':
+        title, text, time = Entry.get_info(entry_id)
+        return {'title': title, 'text': text, 'id': entry_id}
 
 
 @view_config(context=DBAPIError)
@@ -205,6 +211,7 @@ def main():
     config.add_route('logout', '/logout')
     config.add_route('detail', 'detail/{entry_id}')
     config.add_route('edit', 'edit/{entry_id}')
+    config.add_route('ajax_edit', 'ajax_edit/{entry_id}')
     config.scan()
     app = config.make_wsgi_app()
     return app

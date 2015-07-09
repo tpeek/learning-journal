@@ -1,20 +1,50 @@
 {% extends "base.jinja2" %}
 {% block section %}
+
+
+<script>
+  function loadXMLDoc() {
+    document.getElementById('edit_entry').style.display = 'none';
+    document.getElementById('entry').style.display = 'none';
+    xmlhttp=new XMLHttpRequest();
+    document.getElementById('myDiv').innerHTML = "Loading...";
+    if (window.XMLHttpRequest){
+    // code for IE7+, Firefox, Chrome, Opera, Safari
+    xmlhttp=new XMLHttpRequest();
+  }
+  else{
+    // code for IE6, IE5
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xmlhttp.open("GET","{{ request.route_url('ajax_edit', entry_id=id) }}",true);
+  xmlhttp.send();
+  xmlhttp.onreadystatechange = function () {
+    if (xmlhttp.readyState === 4) {                // 4 = Response from server has been completely loaded.
+      document.getElementById('myDiv').innerHTML = xmlhttp.responseText;
+      document.getElementById('share').style.display = 'none';
+    }
+  }
+}
+</script>
 <nav>
   <ul>
     <li><a href="{{ request.route_url('home') }}">Home</a></li>
     {% if request.authenticated_userid %}
-      <li><a id="add" href="{{ request.route_url('add') }}">Add</a></li>
-      <li><a id="edit" href="{{ request.route_url('edit', entry_id=id) }}">Edit</a></li>
-      <li><a id="logout" href="{{ request.route_url('logout') }}">Log Out</a></li>
+    <li><a id="add" href="{{ request.route_url('add') }}">Add</a></li>
+    <li><a id="edit" href="{{ request.route_url('edit', entry_id=id) }}">Edit</a></li>
+    <li><a id="logout" href="{{ request.route_url('logout') }}">Log Out</a></li>
     {%- endif %}
   </ul>
 </nav>
 </header>
 <div id="wrapper">
-  <section class="highlight">
-    <h3 class="title">{{ title }} ---- {{ time }}</h3>
-    <p class="text">{{ text|safe }}</p>
+  <div id="myDiv"></div>
+  <section id="entry" class="highlight">
+    {% if request.authenticated_userid %}
+    <button id="edit_entry" type="button" onclick="loadXMLDoc()">Edit Entry</button>
+    {% endif %}
+    <h3 id="title" class="title">{{ title }} ---- {{ time }}</h3>
+    <p id="text" class="text">{{ text|safe }}</p>
   </section>
 </div>
 {% endblock %}
