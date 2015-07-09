@@ -57,7 +57,7 @@ class Entry(Base):
         return session.query(cls).order_by(cls.created.desc()).all()
 
     @classmethod
-    def get_entry(cls, entry_id, session=None):
+    def get_info(cls, entry_id, session=None):
         if session is None:
             session = DBSession
         entry = session.query(cls).filter(Entry.id == entry_id).first()
@@ -114,7 +114,7 @@ def ajax_add(request):
 @view_config(route_name='detail', renderer='templates/detail.jinja2')
 def detail(request):
     entry_id = request.matchdict['entry_id']
-    title, text, time = Entry.get_entry(entry_id)
+    title, text, time = Entry.get_info(entry_id)
     text = markdown.markdown(text, extensions=['codehilite', 'fenced_code'])
     return {'title': title, 'text': text, 'id': entry_id, 'time': time}
 
@@ -123,10 +123,11 @@ def detail(request):
 def edit(request):
     entry_id = request.matchdict['entry_id']
     if request.method == 'GET':
-        title, text, time = Entry.get_entry(entry_id)
+        title, text, time = Entry.get_info(entry_id)
+        print title
         return {'title': title, 'text': text, 'id': entry_id}
 
-    if request.method == 'POST':
+    elif request.method == 'POST':
         title = request.params.get('title')
         text = request.params.get('text')
         if not (title == "" or text == ""):
