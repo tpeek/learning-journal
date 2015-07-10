@@ -21,6 +21,8 @@
   <button id="add_entry" type="button" onclick="loadXMLDoc()">Add Entry</button>
   <button id="submit_entry" type="button" onclick="loadXMLDoc2()">Share</button>
   {% endif %}
+  <br><div id="new_div">
+  </div>
   {% for entry in entries %}
   <a class="post" href="{{ request.route_url('detail', entry_id=entry.id) }}">
     <h4>
@@ -43,7 +45,7 @@
     xmlhttp.open("GET","{{ request.route_url('ajax_add') }}",true);
     xmlhttp.send();
     xmlhttp.onreadystatechange = function () {
-    if (xmlhttp.readyState === 4) {                // 4 = Response from server has been completely loaded.
+    if (xmlhttp.readyState === 4) {
       document.getElementById('myDiv').innerHTML = xmlhttp.responseText;
       document.getElementById('add_entry').style.display = 'none';
       document.getElementById('submit_entry').style.display = 'initial';
@@ -59,13 +61,19 @@ function loadXMLDoc2() {
   var formElement = document.querySelector("form");
   var formData = new FormData(formElement);
 
-  xmlhttp.open("POST","{{ request.route_url('ajax_add') }}",true);
+  xmlhttp.open("POST", "{{ request.route_url('ajax_add') }}", true);
   xmlhttp.send(new FormData(formElement));
 
-  xmlhttp.onreadystatechange = function () {
-    if (xmlhttp.readyState === 4) {                // 4 = Response from server has been completely loaded.
-      alert(xmlhttp.responseText)
-      document.getElementById('entry_field').innerHTML = xmlhttp.responseText;
+  xmlhttp.onreadystatechange = function (response) {
+    if (xmlhttp.readyState === 4) {
+      response = JSON.parse(xmlhttp.responseText);
+      var top = document.getElementById('new_div');
+      var aTag = document.createElement('a');
+      aTag.setAttribute('href', '/detail/'+response['id']);
+      aTag.innerHTML = response['time'] + "  ----  " + response['title'];
+      var h4Tag = document.createElement('h4');
+      h4Tag.appendChild(aTag);
+      top.insertBefore(h4Tag, top.children[0]);
       document.getElementById('add_entry').style.display = 'initial';
       document.getElementById('submit_entry').style.display = 'none';
       document.getElementById('add_it').style.display = 'none';

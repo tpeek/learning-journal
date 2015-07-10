@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import os
+import json
 import datetime
 from pyramid.config import Configurator
 from pyramid.view import view_config
@@ -9,6 +10,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.security import remember, forget
+from pyramid.response import Response
 from waitress import serve
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
@@ -57,15 +59,20 @@ class Entry(Base):
         return session.query(cls).order_by(cls.created.desc()).all()
 
     @classmethod
-    def get_info(cls, entry_id=None, title=None, session=None):
+    def last(cls, session=None):
+        if session is None:
+            session = DBSession
+        return session.query(cls).order_by(cls.created.desc()).first()
+
+    @classmethod
+    def get(cls, entry_id=None, title=None, session=None):
         if session is None:
             session = DBSession
         if title is None:
             entry = session.query(cls).filter(Entry.id == entry_id).first()
         else:
-            entry = session.query(cls).filter(Entry.id == entry_id).first()
-    ##### you have to change some stuff here so that itll return the whole entry because we need the id somethimes.
-        return entry.title, entry.text, entry.created.strftime('%b. %d, %Y')
+            entry = session.query(cls).filter(Entry.title == title).first()
+        return entry
 
     @classmethod
     def edit_entry(cls, entry_id, title, text, session=None):
@@ -98,16 +105,24 @@ def home(request):
 
 def do_add(request, redirect):
     if request.method == 'POST':
-        print "a ok!"
         title = request.params.get('title')
         text = request.params.get('text')
+
         print title, text
         if not (title == "" or text == ""):
             Entry.write(title=title, text=text)
             if redirect:
                 return HTTPFound(request.route_url('home'))
             else:
-                return HTTPFound(request.route_url('added'))
+                print "before added"
+                new_entry = Entry.last()
+                return Response(body=json.dumps({
+                                'title': title,
+                                'text': text,
+                                'id': new_entry.id,
+                                'time': new_entry.created.strftime('%b. %d, %Y')}),
+                                content_type=b'application/json')
+                return HTTPFound(request.route_url('added', title=title))
         else:
             return {'title': title, 'text': text}
     else:
@@ -124,27 +139,30 @@ def ajax_add(request):
     return do_add(request, False)
 
 
-@view_config(route_name='added', renderer='tmeplates/added.jinja2')
+@view_config(route_name='added', renderer='templates/added.jinja2')
 def added(request):
-    title = request.params.get('title')
-    text = request.params.get('text')
-    return {'title': title, 'text': text}
+    title = request.matchdict['title']
+    entry = Entry.get(title=title)
+    return {'entry': entry}
 
 
 @view_config(route_name='detail', renderer='templates/detail.jinja2')
 def detail(request):
     entry_id = request.matchdict['entry_id']
-    title, text, time = Entry.get_info(entry_id)
-    text = markdown.markdown(text, extensions=['codehilite', 'fenced_code'])
-    return {'title': title, 'text': text, 'id': entry_id, 'time': time}
+    entry = Entry.get(entry_id)
+    text = markdown.markdown(entry.text, extensions=['codehilite', 'fenced_code'])
+    return {'title': entry.title,
+            'text': text,
+            'id': entry_id,
+            'time': entry.created.strftime('%b. %d, %Y')}
 
 
 @view_config(route_name='edit', renderer='templates/edit.jinja2')
 def edit(request):
     entry_id = request.matchdict['entry_id']
     if request.method == 'GET':
-        title, text, time = Entry.get_info(entry_id)
-        return {'title': title, 'text': text, 'id': entry_id}
+        entry = Entry.get(entry_id)
+        return {'title': entry.title, 'text': entry.text, 'id': entry_id}
     elif request.method == 'POST':
         title = request.params.get('title')
         text = request.params.get('text')
@@ -159,8 +177,8 @@ def edit(request):
 def ajax_edit(request):
     entry_id = request.matchdict['entry_id']
     if request.method == 'GET':
-        title, text, time = Entry.get_info(entry_id)
-        return {'title': title, 'text': text, 'id': entry_id}
+        entry = Entry.get(entry_id)
+        return {'title': entry.title, 'text': entry.text, 'id': entry_id}
 
 
 @view_config(context=DBAPIError)
@@ -227,7 +245,7 @@ def main():
     config.add_route('home', '/')
     config.add_route('add', '/add')
     config.add_route('ajax_add', '/ajax_add')
-    config.add_route('added', '/added')
+    config.add_route('added', '/added/{title}')
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
     config.add_route('detail', 'detail/{entry_id}')
