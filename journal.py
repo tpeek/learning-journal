@@ -107,14 +107,11 @@ def do_add(request, redirect):
     if request.method == 'POST':
         title = request.params.get('title')
         text = request.params.get('text')
-
-        print title, text
         if not (title == "" or text == ""):
             Entry.write(title=title, text=text)
             if redirect:
                 return HTTPFound(request.route_url('home'))
             else:
-                print "before added"
                 new_entry = Entry.last()
                 return Response(body=json.dumps({
                                 'title': title,
@@ -122,7 +119,6 @@ def do_add(request, redirect):
                                 'id': new_entry.id,
                                 'time': new_entry.created.strftime('%b. %d, %Y')}),
                                 content_type=b'application/json')
-                return HTTPFound(request.route_url('added', title=title))
         else:
             return {'title': title, 'text': text}
     else:
@@ -157,8 +153,7 @@ def detail(request):
             'time': entry.created.strftime('%b. %d, %Y')}
 
 
-@view_config(route_name='edit', renderer='templates/edit.jinja2')
-def edit(request):
+def do_edit(request, redirect):
     entry_id = request.matchdict['entry_id']
     if request.method == 'GET':
         entry = Entry.get(entry_id)
@@ -168,17 +163,28 @@ def edit(request):
         text = request.params.get('text')
         if not (title == "" or text == ""):
             Entry.edit_entry(entry_id, title, text)
-            return HTTPFound(request.route_url('detail', entry_id=entry_id))
+            if redirect:
+                return HTTPFound(request.route_url('detail', entry_id=entry_id))
+            else:
+                entry = Entry.get(entry_id)
+                return Response(body=json.dumps({
+                                'title': entry.title,
+                                'text': markdown.markdown(entry.text, extensions=['codehilite', 'fenced_code']),
+                                'id': entry.id,
+                                'time': entry.created.strftime('%b. %d, %Y')}),
+                                content_type=b'application/json')
         else:
             return {'title': title, 'text': text, 'id': entry_id}
 
 
+@view_config(route_name='edit', renderer='templates/edit.jinja2')
+def edit(request):
+    return do_edit(request, True)
+
+
 @view_config(route_name='ajax_edit', renderer='templates/ajax_edit.jinja2')
 def ajax_edit(request):
-    entry_id = request.matchdict['entry_id']
-    if request.method == 'GET':
-        entry = Entry.get(entry_id)
-        return {'title': entry.title, 'text': entry.text, 'id': entry_id}
+    return do_edit(request, False)
 
 
 @view_config(context=DBAPIError)

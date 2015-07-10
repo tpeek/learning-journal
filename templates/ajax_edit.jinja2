@@ -1,5 +1,5 @@
   <section>
-    <form action="{{ request.route_url('edit', entry_id=id) }}" method="POST" class="edit_entry">
+    <form id="form" action="{{ request.route_url('edit', entry_id=id) }}" method="POST" class="edit_entry">
       <div class="field">
         <p>Entry Title</p>
         <label for="title"></label>
@@ -10,8 +10,6 @@
         <label for="text"></label>
         <textarea name="text" id="text" rows="10" cols="70">{{ text }}</textarea>
       </div>
-      <div class="control_row">
-        <input type="submit" value="Share" name="Share"/>
-      </div>
+      <button id="p" type="button" onclick="loadXMLDoc2()">Submit</button>
       </form>
   </section>
