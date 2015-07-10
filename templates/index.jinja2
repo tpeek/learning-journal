@@ -1,47 +1,82 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Tyler Peek | Home</title>
-  <link href="/static/style.css" rel="stylesheet">
-  <link href='http://fonts.googleapis.com/css?family=Homemade+Apple' rel='stylesheet' type='text/css'>
-</head>
-<body>
-  <header>
-    <a href="{{ request.route_url('home') }}" id="logo">
-      <h1 class="name">Tyler Peek</h1>
-      <h2>Python Developer</h2>
-    </a>
-    <nav>
-      <ul>
-        <li><a id="home" class="selected">Home</a></li>
-        {% if request.authenticated_userid %}
-        <li><a id="add" href="{{ request.route_url('add') }}">Add</a></li>
-        <li><a id="logout" href="{{ request.route_url('logout') }}">Log Out</a></li>
-        {% else %}
-        <li><a id="login" href="{{ request.route_url('login') }}">Login</a></li>
-        {% endif %}
-      </ul>
-    </nav>
-  </header>
-  <h3>Journal Entries</h3>
-  <div id="entry_field">
-  {% for entry in entries %}
-    <a class="post" href="{{ request.route_url('detail', entry_id=entry.id) }}">
-      <h4>
-        {{ entry.created.strftime('%b. %d, %Y') }}  ----  {{ entry.title }}
-      </h4>
-    </a>
-  {% else %}
-    <div class="entry">
-      <p><em>No entries here so far</em></p>
-    </div>
-  {% endfor %}
+{% extends "base.jinja2" %}
+{% block section %}
+<nav>
+  <ul>
+    <li><a id="home" class="selected">Home</a></li>
+    {% if request.authenticated_userid %}
+    <li><a id="add" href="{{ request.route_url('add') }}">Add</a></li>
+    <li><a id="logout" href="{{ request.route_url('logout') }}">Log Out</a></li>
+    {% else %}
+    <li><a id="login" href="{{ request.route_url('login') }}">Login</a></li>
+    {% endif %}
+  </ul>
+</nav>
+</header>
+<h3>Journal Entries</h3>
+<div id="entry_field">
+  {% if request.authenticated_userid %}
+  <div id="myDiv"></div>
+  <button id="add_entry" type="button" onclick="loadXMLDoc()">Add Entry</button>
+  <button id="submit_entry" type="button" onclick="loadXMLDoc2()">Share</button>
+  {% endif %}
+  <br><div id="new_div">
   </div>
-  <footer>
+  {% for entry in entries %}
+  <a class="post" href="{{ request.route_url('detail', entry_id=entry.id) }}">
+    <h4>
+      {{ entry.created.strftime('%b. %d, %Y') }}  ----  {{ entry.title }}
+    </h4>
   </a>
-  <p>&copy; 2015 Tyler Peek.</p>
-</footer>
+  {% else %}
+  <div class="entry">
+    <p><em>No entries here so far</em></p>
+  </div>
+  {% endfor %}
 </div>
-</body>
-</html>
+
+<script>
+  document.getElementById('submit_entry').style.display = 'none';
+  function loadXMLDoc() {
+    document.getElementById('add_entry').style.display = 'none';
+    xmlhttp=new XMLHttpRequest();
+    xmlhttp.open("GET","{{ request.route_url('ajax_add') }}",true);
+    xmlhttp.send();
+    xmlhttp.onreadystatechange = function () {
+    if (xmlhttp.readyState === 4) {
+      document.getElementById('myDiv').innerHTML = xmlhttp.responseText;
+      document.getElementById('add_entry').style.display = 'none';
+      document.getElementById('submit_entry').style.display = 'initial';
+    }
+  }
+}
+
+
+function loadXMLDoc2() {
+  document.getElementById('add_entry').style.display = 'initial';
+  var xmlhttp = new XMLHttpRequest();
+
+  var formElement = document.querySelector("form");
+  var formData = new FormData(formElement);
+
+  xmlhttp.open("POST", "{{ request.route_url('ajax_add') }}", true);
+  xmlhttp.send(new FormData(formElement));
+
+  xmlhttp.onreadystatechange = function (response) {
+    if (xmlhttp.readyState === 4) {
+      response = JSON.parse(xmlhttp.responseText);
+      var top = document.getElementById('new_div');
+      var aTag = document.createElement('a');
+      aTag.setAttribute('href', '/detail/'+response['id']);
+      aTag.innerHTML = response['time'] + "  ----  " + response['title'];
+      var h4Tag = document.createElement('h4');
+      h4Tag.appendChild(aTag);
+      top.insertBefore(h4Tag, top.children[0]);
+      document.getElementById('add_entry').style.display = 'initial';
+      document.getElementById('submit_entry').style.display = 'none';
+      document.getElementById('add_it').style.display = 'none';
+    }
+  }
+}
+</script>
+
+{% endblock %}

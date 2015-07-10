@@ -1,0 +1,15 @@
+  <section>
+    <form id="form" action="{{ request.route_url('edit', entry_id=id) }}" method="POST" class="edit_entry">
+      <div class="field">
+        <p>Entry Title</p>
+        <label for="title"></label>
+        <input type="text" size="30" name="title" id="title" value="{{ title }}">
+      </div>
+      <div class="field">
+        <p>How was your day?</p>
+        <label for="text"></label>
+        <textarea name="text" id="text" rows="10" cols="70">{{ text }}</textarea>
+      </div>
+      <button id="p" type="button" onclick="loadXMLDoc2()">Submit</button>
+      </form>
+  </section>
