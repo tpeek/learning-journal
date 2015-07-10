@@ -146,7 +146,8 @@ def added(request):
 def detail(request):
     entry_id = request.matchdict['entry_id']
     entry = Entry.get(entry_id)
-    text = markdown.markdown(entry.text, extensions=['codehilite', 'fenced_code'])
+    text = markdown.markdown(entry.text,
+                             extensions=['codehilite', 'fenced_code'])
     return {'title': entry.title,
             'text': text,
             'id': entry_id,
@@ -164,12 +165,15 @@ def do_edit(request, redirect):
         if not (title == "" or text == ""):
             Entry.edit_entry(entry_id, title, text)
             if redirect:
-                return HTTPFound(request.route_url('detail', entry_id=entry_id))
+                return HTTPFound(request.route_url(
+                                 'detail', entry_id=entry_id))
             else:
                 entry = Entry.get(entry_id)
                 return Response(body=json.dumps({
                                 'title': entry.title,
-                                'text': markdown.markdown(entry.text, extensions=['codehilite', 'fenced_code']),
+                                'text': markdown.markdown(
+                                 entry.text, extensions=['codehilite',
+                                                         'fenced_code']),
                                 'id': entry.id,
                                 'time': entry.created.strftime('%b. %d, %Y')}),
                                 content_type=b'application/json')

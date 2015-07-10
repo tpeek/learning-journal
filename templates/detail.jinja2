@@ -12,19 +12,23 @@
 </nav>
 </header>
 <body>
-<div id="wrapper">
-  <div id="myDiv"></div>
-  <section id="entry" class="highlight">
+  <div id="fb-root"></div>
+  <div id="wrapper">
+    <div id="myDiv"></div>
     {% if request.authenticated_userid %}
     <button id="edit_entry" type="button" onclick="loadXMLDoc()">Edit Entry</button>
     {% endif %}
-    <h3 id="title1" class="title">{{ time }} ---- {{ title }}</h3>
-    <div id="text1" class="text">{{ text|safe }}</div>
-  </section>
-</div>
+    <section id="entry" class="highlight">
+      <h3 id="title1" class="title">{{ time }} ---- {{ title }}</h3>
+      <div id="text1" class="text">{{ text|safe }}</div>
+    </section>
+    <div><a href="https://twitter.com/share" class="twitter-share-button" data-via="TylerJPeek" data-size="large">Tweet</a></div><br>
+      <div class="fb-share-button" data-href="https://developers.facebook.com/docs/plugins/" data-layout="button_count"></div>
+  </div>
 </body>
 
 <script>
+  document.getElementById('label').innerHTML = '{{ title }}';
   function loadXMLDoc() {
     document.getElementById('myDiv').style.display = 'initial';
     document.getElementById('edit_entry').style.display = 'none';
@@ -34,32 +38,49 @@
     xmlhttp.send();
 
     xmlhttp.onreadystatechange = function () {
-    if (xmlhttp.readyState === 4) {
-      document.getElementById('myDiv').innerHTML = xmlhttp.responseText;
+      if (xmlhttp.readyState === 4) {
+        document.getElementById('myDiv').innerHTML = xmlhttp.responseText;
+      }
     }
   }
-}
 
+  function loadXMLDoc2() {
+    var xmlhttp = new XMLHttpRequest();
+    var formElement = document.querySelector("form");
+    var formData = new FormData(formElement);
+    xmlhttp.open("POST", "{{ request.route_url('ajax_edit', entry_id=id) }}", true);
+    xmlhttp.send(new FormData(formElement));
 
-function loadXMLDoc2() {
-  var xmlhttp = new XMLHttpRequest();
-  var formElement = document.querySelector("form");
-  var formData = new FormData(formElement);
-  xmlhttp.open("POST", "{{ request.route_url('ajax_edit', entry_id=id) }}", true);
-  xmlhttp.send(new FormData(formElement));
-
-  xmlhttp.onreadystatechange = function (response) {
-    if (xmlhttp.readyState === 4) {
-      response = JSON.parse(xmlhttp.responseText);
-      var title = document.getElementById('title1');
-      var text = document.getElementById('text1');
-      title.innerHTML = response['time'] + "  ----  " + response['title'];
-      text.innerHTML = response['text'];
-      document.getElementById('myDiv').style.display = 'none';
-      document.getElementById('entry').style.display = 'initial';
-      document.getElementById('edit_entry').style.display = 'initial';
+    xmlhttp.onreadystatechange = function (response) {
+      if (xmlhttp.readyState === 4) {
+        response = JSON.parse(xmlhttp.responseText);
+        var title = document.getElementById('title1');
+        var text = document.getElementById('text1');
+        title.innerHTML = response['time'] + "  ----  " + response['title'];
+        text.innerHTML = response['text'];
+        document.getElementById('myDiv').style.display = 'none';
+        document.getElementById('entry').style.display = 'initial';
+        document.getElementById('edit_entry').style.display = 'initial';
+      }
     }
   }
-}
+
+  !function(d,s,id){
+    var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
+    if(!d.getElementById(id)){
+      js=d.createElement(s);
+      js.id=id;js.src=p+'://platform.twitter.com/widgets.js';
+      fjs.parentNode.insertBefore(js,fjs);
+    }
+  }
+  (document, 'script', 'twitter-wjs');
+
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.4";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
 </script>
 {% endblock %}
