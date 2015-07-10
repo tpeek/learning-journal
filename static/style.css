@@ -92,14 +92,6 @@ footer {
   color: #666;
 }
 
-/**************************
-PAGE HOME
-**************************/
-
-/*#wrapper li {
-  list-style: none;
-}*/
-
 
 /**************************
 PAGE ADD
@@ -146,12 +138,12 @@ COLORS
 /* Site Body */
 body {
   background-color: #ffe6b5;
-  /*color: #666;*/
+  color: #666;
   text-indent: 50px;
 }
 
 h1, h2 {
-  /*color: #666;*/
+  color: #666;
 }
 
 /* Orange Header */
